@@ -1,3 +1,16 @@
+# Falken
+temp/
+venv/
+#*.sqlite3
+
+# IDE folders
+# Mac
+.DS_Store
+# Visual Studio Code
+.vscode
+# Pycharm
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

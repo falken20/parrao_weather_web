@@ -1,0 +1,138 @@
+.section {
+    text-align: center;
+    font-size: 3em;
+    background-color: black
+}
+.aboutPage {
+    text-align: center;
+    font-size: 3em;
+    background-image: url('/static/assets/background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: left;
+}
+
+.aboutPageText {
+    text-align: left;
+    color: white;
+    font-family: Monospace, Arial, Helvetica, sans-serif;
+    font-size: 70%;
+    padding-left: 25%;
+}
+
+.aboutPageLayer {
+    padding-top: 20%;
+    align-content: center;
+    background-color: black;
+    height: 100%;
+    width: 100%;
+    opacity: 0.40;
+}
+
+.contactPage {
+    text-align: center;
+    font-size: 3em;
+    background-color: rgb(33, 33, 40);
+    background-image: url('/static/assets/background_contact.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.75;
+}
+
+.portfolioPage {
+    align-content: center;
+    text-align: center;
+    font-size: 3em;
+    background-color: white;
+    background-image: url('/static/assets/background_portfolio.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: right;
+    opacity: 0.75;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    float: right;
+}
+
+li {
+    list-style-type: none;
+    float: left;
+    text-decoration: none;
+}
+
+li a {
+    display: block;
+    text-align: left;
+    margin: 4px 5px;
+    padding: 0px 0px;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24px;
+}
+
+/* Change the link color to #111 (black) on hover */
+.test:hover {
+    color: rgb(33,33,40);
+}
+
+li a:hover {
+    color: rgb(255, 255, 255);
+}
+
+li.active a {
+    color: white;
+}
+
+a:link {
+    color: rgba(255, 255, 255, 0.60);
+}
+a:visited {
+    color:rgb(191, 191, 203);
+}
+.nav {
+    right: 0;
+    position: fixed;
+    z-index: 9;
+}
+
+.aboutMe {
+    color: white;
+    font-size: 110%;
+    text-align: left;
+}
+
+.contact {
+    color: white;
+    height: 75%;
+    width: 50%;
+    float: right;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 100%;
+    text-align: left;
+}
+
+.link_contact {
+    font-size: 90%;
+    list-style-type: none;
+    text-decoration: none;
+}
+
+.links {
+    font-size: 70%;
+    list-style-type: none;
+    text-decoration: none;
+}
+
+.social {
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    position: absolute;
+    bottom: 5px;
+    list-style-type: none;
+    left: 5px;
+    text-decoration: none;
+}
