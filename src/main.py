@@ -1,3 +1,5 @@
+# by Richi Rod AKA @richionline / falken20
+
 import os
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv
@@ -9,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 print(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../templates", static_folder="../static")
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 

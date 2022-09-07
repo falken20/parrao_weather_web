@@ -40,6 +40,17 @@
 }
 
 .portfolioPage {
+    text-align: center;
+    font-size: 3em;
+    background-color: rgb(33, 33, 40);
+    background-image: url('/static/assets/background_contact.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.75;
+}
+
+/*
+.portfolioPage {
     align-content: center;
     text-align: center;
     font-size: 3em;
@@ -50,6 +61,8 @@
     background-position: right;
     opacity: 0.75;
 }
+*/
+
 ul {
     list-style-type: none;
     margin: 0;
@@ -100,8 +113,14 @@ a:visited {
 }
 
 .aboutMe {
-    color: white;
+    color: rgb(255, 255, 255);
     font-size: 110%;
+    text-align: left;
+}
+
+.weatherData {
+    color: black !important;
+    font-size: 60%;
     text-align: left;
 }
 
