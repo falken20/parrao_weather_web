@@ -21,12 +21,12 @@
 }
 
 .aboutPageLayer {
-    padding-top: 20%;
+    padding-top: 10%;
     align-content: center;
     background-color: black;
     height: 100%;
     width: 100%;
-    opacity: 0.40;
+    opacity: 0.50;
 }
 
 .contactPage {
@@ -158,8 +158,10 @@ a:visited {
 
 .table td {
     text-align: center;   
+    vertical-align: middle;
  }
 
  .table th {
     text-align: center;   
+    vertical-align: middle;
  }
