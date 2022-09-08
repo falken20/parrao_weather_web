@@ -17,7 +17,7 @@
     color: white;
     font-family: Monospace, Arial, Helvetica, sans-serif;
     font-size: 70%;
-    padding-left: 25%;
+    padding-left: 15%;
 }
 
 .aboutPageLayer {
@@ -155,3 +155,11 @@ a:visited {
     left: 5px;
     text-decoration: none;
 }
+
+.table td {
+    text-align: center;   
+ }
+
+ .table th {
+    text-align: center;   
+ }
