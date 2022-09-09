@@ -159,6 +159,8 @@ a:visited {
 .table td {
     text-align: center;   
     vertical-align: middle;
+    color: green !important;
+    font-weight: bold;
  }
 
  .table th {

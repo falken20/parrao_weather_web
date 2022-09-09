@@ -14,9 +14,14 @@
 Web to get the summary data from the personal weather station
 
 ---
-
-##### Setup
+##### Endpoint
 https://richionline-portfolio.nw.r.appspot.com
+
+##### Deploy in Google Cloud Platform
+
+```
+gcloud app deploy
+```
 
 ##### Setup
 
@@ -50,6 +55,14 @@ or
 coverage run -m pytest -v && coverage html --omit=*/venv/*,*/tests/*
 ```
 ---
+
+##### Doc API wunderground.com
+
+API General doc: https://docs.google.com/document/d/1eKCnKXI9xnoMGRRzOL1xPCBihNV2rOet08qpE_gArAY/edit
+API Current conditions: https://ibm.co/v2PWSCC
+
+##### Icons used
+https://icons8.com/
 
 ##### Versions
 
