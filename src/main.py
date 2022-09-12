@@ -5,7 +5,7 @@ from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 
 from src.logger import Log, console
-from src.weather import get_weather_data
+from src.weather import get_weather_data, URL_WEATHER_DAY, URL_WEATHER_CURRENT
 
 console.rule("Cercedilla Weather Web")
 
@@ -23,9 +23,10 @@ def home():
     Log.info(f"Access to home page")
     url_for('static', filename='main.css')
 
-    get_weather_data()
+    weather_current = get_weather_data(URL_WEATHER_CURRENT)
+    weather_day = get_weather_data(URL_WEATHER_DAY)
 
-    return render_template("main.html")
+    return render_template("main.html", weather_current=weather_current)
 
 
 @app.route("/contact")

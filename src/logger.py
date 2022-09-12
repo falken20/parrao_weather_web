@@ -18,7 +18,7 @@ style_ERROR = Style(color="red", bgcolor="white", bold=True)
 
 # Min log level to print
 LEVEL_LOG = os.getenv('LEVEL_LOG', "DEBUG, INFO, WARNING, ERROR")
-console.print(f"LOG LEVEL: {LEVEL_LOG}", style="red")
+console.print(f"LOG LEVEL: {LEVEL_LOG}", style="yellow")
 
 
 class Log():

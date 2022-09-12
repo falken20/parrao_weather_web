@@ -12,10 +12,17 @@ API_KEY = os.environ.get('API_KEY')
 URL_WEATHER_CURRENT = f"https://api.weather.com/v2/pws/observations/current?stationId={STATION_ID}" \
     f"&format=json&units=m&numericPrecision=decimal" \
     f"&apiKey={API_KEY}"
-URL_WEATHER_DAY = f"https://api.weather.com/v2/pws/history/daily?stationId={STATION_ID}" \
+
+URL_WEATHER_DAY = f"https://api.weather.com/v2/pws/observations/all/1day?stationId={STATION_ID}" \
+    f"&format=json&units=m&numericPrecision=decimal" \
+    f"&apiKey={API_KEY}"
+
+URL_WEATHER_HISTORY = f"https://api.weather.com/v2/pws/history/daily?stationId={STATION_ID}" \
     f"&format=json&units=m&numericPrecision=decimal" \
     f"&apiKey={API_KEY}" \
     f"&date="
+
+
 
 
 def get_weather_data(url=URL_WEATHER_CURRENT):
