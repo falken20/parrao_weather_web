@@ -30,7 +30,10 @@
         <div class="aboutPageLayer">
             <div class="aboutPageText">
                     <div class="aboutMe">
-                        <img src="/static/assets/icons/ico_location.png" height="50"> Cercedilla ({{ weather_current.metric.elev }}m) - {{ weather_current.obsTimeLocal }}
+                        <img src="/static/assets/icons/ico_location.png" height="30"> Cercedilla ({{ weather_current.metric.elev }}m) - {{ weather_current.obsTimeLocal }}
+                        <br>
+                        <img src="/static/assets/icons/ico_sunrise_color.png" height="35"> {{ sunrise_sunset.results.sunrise }} 
+                        <img src="/static/assets/icons/ico_sunset_color.png" height="35"> {{ sunrise_sunset.results.sunset }}
                     </div>
                     <br>
                     <table class="table table-danger table-striped weatherData" style="width: 80%">
@@ -44,18 +47,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row"><img src="/static/assets/icons/ico_sunrise.png" width="50%"></th>
-                                <td>-</td>
-                                <td>{{ sunrise_sunset.results.sunrise }}</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><img src="/static/assets/icons/ico_sunset.png" width="50%"></th>
-                                <td>-</td>
-                                <td>{{ sunrise_sunset.results.sunset }}</td>
-                                <td>-</td>
-                            </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_temp.png" width="50%"></th>
                                 <td>{{ weather_data.data.outdoor.temperature.value }} {{ weather_data.data.outdoor.temperature.unit }}</td>

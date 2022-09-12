@@ -17,6 +17,8 @@ URL_WEATHER_WUNDERGROUND_DAY = f"https://api.weather.com/v2/pws/history/daily?st
     f"&apiKey={API_KEY_WUNDERGROUND}" \
     f"&date=20220912"
 
+ # TODO: Set the date in URL_WEATHER_WUNDERGROUND_DAY in param
+
 # Weather EcoWitt API data
 API_KEY_ECOWITT = os.environ.get('API_KEY_ECOWITT')
 APPLICATION_KEY_ECOWITT = os.environ.get('APPLICATION_KEY')
@@ -27,8 +29,7 @@ URL_WEATHER_ECOWITT = f"https://api.ecowitt.net/api/v3/device/real_time?applicat
     f"&call_back=all"
 
 # API by https://sunrise-sunset.org/api
-URL_SUNRISE_SUNSET = f"https://api.sunrise-sunset.org/json?lat=40.727&lng=-4.074" \
-    f"&date=today"
+URL_SUNRISE_SUNSET = "https://api.sunrise-sunset.org/json?lat=40.727&lng=-4.074&date=today"
 
 
 def get_weather_data(url=URL_WEATHER_ECOWITT):
