@@ -56,8 +56,10 @@ coverage run -m pytest -v && coverage html --omit=*/venv/*,*/tests/*
 ```
 ---
 
-##### Doc API wunderground.com
+##### Doc API ecowitt.net
+https://doctest.ecowitt.net/web/#/apiv3en?page_id=17
 
+##### Doc API wunderground.com
 API General doc: https://docs.google.com/document/d/1eKCnKXI9xnoMGRRzOL1xPCBihNV2rOet08qpE_gArAY/edit
 API Current conditions: https://ibm.co/v2PWSCC
 

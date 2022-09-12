@@ -47,50 +47,46 @@
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_sunrise.png" width="50%"></th>
                                 <td>-</td>
+                                <td>{{ sunrise_sunset.results.sunrise }}</td>
                                 <td>-</td>
-                                <td>07:00</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_sunset.png" width="50%"></th>
                                 <td>-</td>
+                                <td>{{ sunrise_sunset.results.sunset }}</td>
                                 <td>-</td>
-                                <td>22:00</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_temp.png" width="50%"></th>
-                                <td>{{ weather_current.metric.temp }}º</td>
-                                <td>{{ weather_day.metric.tempLow }}º <br> {{ weather_day.metric.tempHigh }}º</td>
-                                <td>12,3º <br> 22º</td>
+                                <td>{{ weather_data.data.outdoor.temperature.value }} {{ weather_data.data.outdoor.temperature.unit }}</td>
+                                <td>{{ weather_day.metric.tempLow }} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ weather_day.metric.tempHigh }} {{ weather_data.data.outdoor.temperature.unit }}</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_rain.png" width="50%"></th>
-                                <td>{{ weather_current.metric.precipTotal }} mm</td>
-                                <td title="Total Precip.">{{ weather_day.metric.precipTotal }} mm</td>
-                                <td>1,2 mm</td>
+                                <td title="Total Precip. Hourly">{{ weather_data.data.rainfall.hourly.value }} {{ weather_data.data.rainfall.hourly.unit }}</td>
+                                <td title="Total Precip. Daily">{{ weather_data.data.rainfall.daily.value }} {{ weather_data.data.rainfall.daily.unit }}</td>
+                                <td title="Total Precip. Monthly">{{ weather_data.data.rainfall.monthly.value }} {{ weather_data.data.rainfall.monthly.unit }}</td>
+                                <td title="Total Precip. Yearly">{{ weather_data.data.rainfall.yearly.value }} {{ weather_data.data.rainfall.yearly.unit }}</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_wind.png" width="50%"></th>
-                                <td>{{ weather_current.metric.windSpeed }} km/h</td>
-                                <td>{{ weather_day.metric.windspeedLow }} km/h <br> {{ weather_day.metric.windspeedHigh }} km/h</td>
-                                <td>2,8 km/h</td>
+                                <td title="Current Wind Speed">{{ weather_data.data.wind.wind_speed.value }} {{ weather_data.data.wind.wind_speed.unit }}</td>
+                                <td title="High Wind Speed">{{ weather_day.metric.windspeedHigh }} km/h</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_humidity.png" width="50%"></th>
-                                <td>{{ weather_current.humidity }} %</td>
-                                <td>{{ weather_day.humidityLow }}% <br> {{ weather_day.humidityHigh }}%</td>
-                                <td>43% <br> 64%</td>
+                                <td title="Current Humidity">{{ weather_data.data.outdoor.humidity.value }} {{ weather_data.data.outdoor.humidity.unit }}</td>
+                                <td title="Low - High Humidity">{{ weather_day.humidityLow }}% <br> {{ weather_day.humidityHigh }}%</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_pression.png" width="50%"></th>
-                                <td>{{ weather_current.metric.pressure }} hpa</td>
-                                <td>{{ weather_day.metric.pressureMin }} hpa <br> {{ weather_day.metric.pressureMax }} hpa</td>
-                                <td>1017.03 hpa <br> 1014.83 hpa</td>
+                                <td title="Current Pressure">{{ weather_data.data.pressure.relative.value }} {{ weather_data.data.pressure.relative.unit }}</td>
+                                <td title="Low - High Pressure">{{ weather_day.metric.pressureMin }} hpa <br> {{ weather_day.metric.pressureMax }} hpa</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_sun.png" width="50%"></th>
-                                <td>{{ weather_current.uv }} UVI</td>
+                                <td>{{ weather_data.data.solar_and_uvi.uvi.value }} UVI</td>
                                 <td title="High UV">{{ weather_day.uvHigh }} UVI</td>
-                                <td>6.0 UVI</td>
                             </tr>
                         </tbody>
                       </table>
