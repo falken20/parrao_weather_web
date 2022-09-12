@@ -47,49 +47,49 @@
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_sunrise.png" width="50%"></th>
                                 <td>-</td>
-                                <td>07:00</td>
+                                <td>-</td>
                                 <td>07:00</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_sunset.png" width="50%"></th>
                                 <td>-</td>
-                                <td>22:00</td>
+                                <td>-</td>
                                 <td>22:00</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_temp.png" width="50%"></th>
                                 <td>{{ weather_current.metric.temp }}º</td>
-                                <td>12,3º <br> 22º</td>
+                                <td>{{ weather_day.metric.tempLow }}º <br> {{ weather_day.metric.tempHigh }}º</td>
                                 <td>12,3º <br> 22º</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_rain.png" width="50%"></th>
                                 <td>{{ weather_current.metric.precipTotal }} mm</td>
-                                <td>1,2 mm</td>
+                                <td title="Total Precip.">{{ weather_day.metric.precipTotal }} mm</td>
                                 <td>1,2 mm</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_wind.png" width="50%"></th>
                                 <td>{{ weather_current.metric.windSpeed }} km/h</td>
-                                <td>2,8 km/h</td>
+                                <td>{{ weather_day.metric.windspeedLow }} km/h <br> {{ weather_day.metric.windspeedHigh }} km/h</td>
                                 <td>2,8 km/h</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_humidity.png" width="50%"></th>
                                 <td>{{ weather_current.humidity }} %</td>
-                                <td>43% <br> 64%</td>
+                                <td>{{ weather_day.humidityLow }}% <br> {{ weather_day.humidityHigh }}%</td>
                                 <td>43% <br> 64%</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_pression.png" width="50%"></th>
                                 <td>{{ weather_current.metric.pressure }} hpa</td>
-                                <td>1017.03 hpa <br> 1014.83 hpa</td>
+                                <td>{{ weather_day.metric.pressureMin }} hpa <br> {{ weather_day.metric.pressureMax }} hpa</td>
                                 <td>1017.03 hpa <br> 1014.83 hpa</td>
                             </tr>
                             <tr>
                                 <th scope="row"><img src="/static/assets/icons/ico_sun.png" width="50%"></th>
                                 <td>{{ weather_current.uv }} UVI</td>
-                                <td>6.0 UVI</td>
+                                <td title="High UV">{{ weather_day.uvHigh }} UVI</td>
                                 <td>6.0 UVI</td>
                             </tr>
                         </tbody>

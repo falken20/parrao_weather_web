@@ -5,14 +5,15 @@ from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 
 from src.logger import Log, console
-from src.weather import get_weather_data, URL_WEATHER_DAY, URL_WEATHER_CURRENT
+from src.weather import get_weather_data, URL_WEATHER_CURRENT, URL_WEATHER_DAY
 
 console.rule("Cercedilla Weather Web")
 
 # Looking for .env file for environment vars
 load_dotenv(find_dotenv())
 
-app = Flask(__name__, template_folder="../templates", static_folder="../static")
+app = Flask(__name__, template_folder="../templates",
+            static_folder="../static")
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -26,7 +27,7 @@ def home():
     weather_current = get_weather_data(URL_WEATHER_CURRENT)
     weather_day = get_weather_data(URL_WEATHER_DAY)
 
-    return render_template("main.html", weather_current=weather_current)
+    return render_template("main.html", weather_current=weather_current, weather_day=weather_day)
 
 
 @app.route("/contact")
