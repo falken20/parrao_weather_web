@@ -17,11 +17,11 @@
     color: white;
     font-family: Monospace, Arial, Helvetica, sans-serif;
     font-size: 70%;
-    padding-left: 15%;
+    padding-left: 5%;
 }
 
 .aboutPageLayer {
-    padding-top: 10%;
+    padding-top: 5%;
     align-content: center;
     background-color: black;
     height: 100%;
@@ -160,10 +160,15 @@ a:visited {
     text-align: center;   
     vertical-align: middle;
     color: green !important;
+    font-size: 130%;
     font-weight: bold;
  }
 
  .table th {
     text-align: center;   
     vertical-align: middle;
+ }
+
+ .iconData {
+     width: 40%;
  }

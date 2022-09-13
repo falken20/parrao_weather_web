@@ -5,8 +5,8 @@ from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 
 from src.logger import Log, console
-from src.weather import get_weather_data, get_sunrise_sunset_data
-from src.weather import URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT, URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY
+from src.weather import get_api_data
+from src.weather import URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT, URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY
 
 console.rule("Cercedilla Weather Web")
 
@@ -26,11 +26,11 @@ def home():
     url_for('static', filename='main.css')
 
     # For Weather Underground API data
-    weather_current = get_weather_data(URL_WEATHER_WUNDERGROUND_CURRENT)
-    weather_day = get_weather_data(URL_WEATHER_WUNDERGROUND_DAY)
+    weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
+    weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
 
-    weather_data = get_weather_data(URL_WEATHER_ECOWITT)
-    sunrise_sunset = get_sunrise_sunset_data(URL_SUNRISE_SUNSET)
+    weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
+    sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET) # TODO: Update to UTC time
 
     return render_template("main.html",
                            weather_data=weather_data,
