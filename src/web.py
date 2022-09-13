@@ -4,6 +4,7 @@ import os
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 
+
 from src.logger import Log, console
 from src.weather import get_api_data
 from src.weather import URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT, URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY
@@ -19,6 +20,19 @@ app = Flask(__name__, template_folder="../templates",
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
+def transform_date(data: dict) -> dict:
+    """Transform dates in UTC format from dict obj to CEST format
+
+    Args:
+        obj (dict): Struct from API data
+
+    Returns:
+        _type_: Struct with dates in CEST formar
+    """
+    sunrise_date = data["sunrise"]
+    sunset_date = data["sunset"]
+
+
 @app.route("/")
 @app.route("/home")
 def home():
@@ -30,7 +44,10 @@ def home():
     weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
 
     weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
-    sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET) # TODO: Update to UTC time
+    sunrise_sunset = get_api_data(
+        URL_SUNRISE_SUNSET)  # TODO: Update to UTC time
+
+    sunrise_sunset = transform_date(sunrise_sunset)
 
     return render_template("main.html",
                            weather_data=weather_data,

@@ -1,3 +1,5 @@
+# by Richi Rod AKA @richionline / falken20
+
 import requests
 import os
 import sys
@@ -55,5 +57,3 @@ def get_api_data(url=URL_WEATHER_ECOWITT_CURRENT):
     except Exception as err:
         Log.error("Erro getting data from API", err, sys)
         return None
-
-

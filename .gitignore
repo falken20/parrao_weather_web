@@ -2,7 +2,6 @@
 temp/
 venv/
 #*.sqlite3
-app.yaml
 
 # IDE folders
 # Mac

@@ -17,7 +17,7 @@ Web to get the summary data from the personal weather station
 ##### Endpoint
 https://richionline-portfolio.nw.r.appspot.com
 
-##### Deploy in Google Cloud Platform
+##### Deploy in Google Cloud Platform using app.yaml
 
 ```
 gcloud app deploy

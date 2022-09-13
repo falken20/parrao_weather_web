@@ -1,3 +1,5 @@
+# by Richi Rod AKA @richionline / falken20
+
 import sys
 import os
 from rich.console import Console

@@ -1,6 +1,6 @@
 # by Richi Rod AKA @richionline / falken20
 
-from src.main import app
+from src.web import app
 
 
 if __name__ == "__main__":
