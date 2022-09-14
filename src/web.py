@@ -32,12 +32,15 @@ def transform_date(data: dict, today: str) -> dict:
         _type_: Struct with dates in CEST formar
     """
     Log.info(f"Dictionary dates: {data}")
+    # Set "%Y%m%d %I:%M:%S %p" format
     sunrise_date = f"{today} {data['results']['sunrise']}"
     sunset_date = f"{today} {data['results']['sunset']}"
     Log.info(f"Dates to transform: {sunrise_date} - {sunset_date}")
 
-    sunrise_date = convert_date(sunrise_date, "UTC", "CEST")
-    sunset_date = convert_date(sunset_date, "UTC", "CEST")
+    sunrise_date = convert_date(
+        sunrise_date, "UTC", "CEST", "%Y%m%d %I:%M:%S %p")
+    sunset_date = convert_date(
+        sunset_date, "UTC", "CEST", "%Y%m%d %I:%M:%S %p")
 
     # Volvemos a dejarlas en el dict en formato sólo hora
     data['results']['sunrise'] = datetime.strftime(sunrise_date, "%H:%M:%S")
