@@ -3,11 +3,13 @@
 import os
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
-
+from datetime import datetime
 
 from src.logger import Log, console
 from src.weather import get_api_data
-from src.weather import URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT, URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY
+from src.weather import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
+                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY)
+from src.utils import convert_date
 
 console.rule("Cercedilla Weather Web")
 
@@ -20,8 +22,8 @@ app = Flask(__name__, template_folder="../templates",
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-def transform_date(data: dict) -> dict:
-    """Transform dates in UTC format from dict obj to CEST format
+def transform_date(data: dict, today: str) -> dict:
+    """Transform time in UTC format from dict obj to CEST format
 
     Args:
         obj (dict): Struct from API data
@@ -29,8 +31,19 @@ def transform_date(data: dict) -> dict:
     Returns:
         _type_: Struct with dates in CEST formar
     """
-    sunrise_date = data["sunrise"]
-    sunset_date = data["sunset"]
+    Log.info(f"Dictionary dates: {data}")
+    sunrise_date = f"{today} {data['results']['sunrise']}"
+    sunset_date = f"{today} {data['results']['sunset']}"
+    Log.info(f"Dates to transform: {sunrise_date} - {sunset_date}")
+
+    sunrise_date = convert_date(sunrise_date, "UTC", "CEST")
+    sunset_date = convert_date(sunset_date, "UTC", "CEST")
+
+    # Volvemos a dejarlas en el dict en formato sólo hora
+    data['results']['sunrise'] = datetime.strftime(sunrise_date, "%H:%M:%S")
+    data['results']['sunset'] = datetime.strftime(sunset_date, "%H:%M:%S")
+
+    return data
 
 
 @app.route("/")
@@ -39,15 +52,17 @@ def home():
     Log.info(f"Access to home page")
     url_for('static', filename='main.css')
 
+    today = datetime.today().strftime('%Y%m%d')
+
     # For Weather Underground API data
     weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
-    weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
-
+    weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY, today)
+    # For EcoWitt API data
     weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
-    sunrise_sunset = get_api_data(
-        URL_SUNRISE_SUNSET)  # TODO: Update to UTC time
+    # For SunSet-Sunrise API data
+    sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET)
 
-    sunrise_sunset = transform_date(sunrise_sunset)
+    sunrise_sunset = transform_date(sunrise_sunset, today)
 
     return render_template("main.html",
                            weather_data=weather_data,
