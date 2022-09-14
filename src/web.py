@@ -7,7 +7,7 @@ from datetime import datetime
 
 from src.logger import Log, console
 from src.weather import get_api_data
-from src.weather import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
+from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                          URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY)
 from src.utils import convert_date
 
@@ -22,11 +22,12 @@ app = Flask(__name__, template_folder="../templates",
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-def transform_date(data: dict, today: str) -> dict:
+def transform_sun_time(data: dict, today: str) -> dict:
     """Transform time in UTC format from dict obj to CEST format
 
     Args:
-        obj (dict): Struct from API data
+        data (dict): Struct from API data
+        today (str): Today date
 
     Returns:
         _type_: Struct with dates in CEST formar
@@ -42,7 +43,7 @@ def transform_date(data: dict, today: str) -> dict:
     sunset_date = convert_date(
         sunset_date, "UTC", "CEST", "%Y%m%d %I:%M:%S %p")
 
-    # Volvemos a dejarlas en el dict en formato sólo hora
+    # Update time fields with the CEST time
     data['results']['sunrise'] = datetime.strftime(sunrise_date, "%H:%M:%S")
     data['results']['sunset'] = datetime.strftime(sunset_date, "%H:%M:%S")
 
@@ -65,7 +66,7 @@ def home():
     # For SunSet-Sunrise API data
     sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET)
 
-    sunrise_sunset = transform_date(sunrise_sunset, today)
+    sunrise_sunset = transform_sun_time(sunrise_sunset, today)
 
     return render_template("main.html",
                            weather_data=weather_data,
