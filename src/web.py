@@ -6,9 +6,10 @@ from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
 
 from src.logger import Log, console
-from src.weather import get_api_data
+from src.weather import get_api_data, get_summary_data
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
-                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY)
+                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY,
+                         URL_WEATHER_ECOWITT_HISTOY)
 from src.utils import convert_date
 
 console.rule("Cercedilla Weather Web")
@@ -61,12 +62,17 @@ def home():
     # For Weather Underground API data
     weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
     weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY, today)
+
     # For EcoWitt API data
     weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
+
     # For SunSet-Sunrise API data
     sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET)
-
+    # Convert UTC time to CEST time
     sunrise_sunset = transform_sun_time(sunrise_sunset, today)
+
+    # Get summary weather data for month and year
+    weather_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
 
     return render_template("main.html",
                            weather_data=weather_data,

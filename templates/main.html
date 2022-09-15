@@ -52,6 +52,8 @@
                                 <th scope="row"><img src="/static/assets/icons/ico_temp.png" class="iconData"></th>
                                 <td>{{ weather_data.data.outdoor.temperature.value }} {{ weather_data.data.outdoor.temperature.unit }}</td>
                                 <td>{{ weather_day.metric.tempLow }} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ weather_day.metric.tempHigh }} {{ weather_data.data.outdoor.temperature.unit }}</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
                                 <!--Rain-->
@@ -66,24 +68,32 @@
                                 <th scope="row"><img src="/static/assets/icons/ico_wind.png" class="iconData"></th>
                                 <td title="Current Wind Speed">{{ weather_data.data.wind.wind_speed.value }} {{ weather_data.data.wind.wind_speed.unit }}</td>
                                 <td title="High Wind Speed">{{ weather_day.metric.windspeedHigh }} km/h</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
                                 <!--Humidity-->
                                 <th scope="row"><img src="/static/assets/icons/ico_humidity.png" class="iconData"></th>
                                 <td title="Current Humidity">{{ weather_data.data.outdoor.humidity.value }} {{ weather_data.data.outdoor.humidity.unit }}</td>
                                 <td title="Low - High Humidity">{{ weather_day.humidityLow }}% <br> {{ weather_day.humidityHigh }}%</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
                                 <!--Pressure-->
                                 <th scope="row"><img src="/static/assets/icons/ico_pression.png" class="iconData"></th>
                                 <td title="Current Pressure">{{ weather_data.data.pressure.relative.value }} {{ weather_data.data.pressure.relative.unit }}</td>
                                 <td title="Low - High Pressure">{{ weather_day.metric.pressureMin }} <br> {{ weather_day.metric.pressureMax }}</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             <tr>
                                 <!--Solar UV-->
                                 <th scope="row"><img src="/static/assets/icons/ico_sun.png" class="iconData"></th>
                                 <td>{{ weather_data.data.solar_and_uvi.uvi.value }} UVI</td>
                                 <td title="High UV">{{ weather_day.uvHigh }} UVI</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                         </tbody>
                       </table>
