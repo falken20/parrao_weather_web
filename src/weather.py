@@ -7,18 +7,18 @@ import json
 from datetime import datetime, date
 
 from src.logger import Log, console
-from src.config import date_from, date_to
 
 
 def get_api_data(url: str, date1=None, date2=None):
     """ Process to get current weather data  """
-    Log.info(f'Getting weather data...')
+    Log.info(f'Getting weather data ({date1} - {date2})...')
+
+    # Check if date params have data
+    date_from = date1 if date1 else None
+    date_to = date2 if date2 else None
+    if date_from and date_to: # Calling to API EcoWitt history 
+        url += f"&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59"
     Log.debug(f"URL: {url}")
-
-    global date_from, date_to
-
-    date_from = date1 if date1 else datetime.today().strftime('%Y%m%d')
-    date_to = date2 if date2 else datetime.today().strftime('%Y%m%d')
 
     try:
         # Getting a dataframe with the all data weather
@@ -51,7 +51,7 @@ def get_year_dates():
 
 
 def get_summary_data(url: str) -> dict:
-    """Methos to generate a dict object with all summary data weather for a current month
+    """Method to generate a dict object with all summary data weather for a current month
     and current year.
 
     Args:
@@ -70,7 +70,6 @@ def get_summary_data(url: str) -> dict:
         date_from, date_to = get_year_dates()
         Log.debug(f"Dates for summary year data: {date_from} - {date_to}")
         year_summary = get_api_data(url, date1=date_from, date2=date_to)
-
 
         return {}
 

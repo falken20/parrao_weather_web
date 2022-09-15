@@ -2,10 +2,6 @@
 from datetime import datetime
 import os
 
-# Global vars
-date_from = datetime.today().strftime('%Y%m%d')
-date_to = datetime.today().strftime('%Y%m%d')
-
 # Weather Underground API data
 STATION_ID = os.environ.get('STATION_ID')
 API_KEY_WUNDERGROUND = os.environ.get('API_KEY_WUNDERGROUND')
@@ -15,8 +11,7 @@ URL_WEATHER_WUNDERGROUND_CURRENT = f"https://api.weather.com/v2/pws/observations
 URL_WEATHER_WUNDERGROUND_DAY = f"https://api.weather.com/v2/pws/history/daily?stationId={STATION_ID}" \
     f"&format=json&units=m&numericPrecision=decimal" \
     f"&apiKey={API_KEY_WUNDERGROUND}" \
-    f"&date={date_from}"
-# TODO: Set the date in URL_WEATHER_WUNDERGROUND_DAY in param
+    f"&date={datetime.today().strftime('%Y%m%d')}"
 
 # Weather EcoWitt API data
 API_KEY_ECOWITT = os.environ.get('API_KEY_ECOWITT')
@@ -30,8 +25,7 @@ URL_WEATHER_ECOWITT_HISTOY = f"https://api.ecowitt.net/api/v3/device/history?app
     f"&api_key={API_KEY_ECOWITT}&mac={STATION_MAC}&cycle_type=1day" \
     f"&temp_unitid=1&pressure_unitid=3&wind_speed_unitid=7&rainfall_unitid=12" \
     f"&call_back=outdoor.temperature,outdoor.humidity,wind.wind_speed,pressure.relative,solar_and_uvi.uvi" \
-    f"&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59" \
-    # TODO: Set dates
+    # f"&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59" \
 
 # API by https://sunrise-sunset.org/api
 URL_SUNRISE_SUNSET = "https://api.sunrise-sunset.org/json?lat=40.727&lng=-4.074&date=today"

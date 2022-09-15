@@ -61,7 +61,7 @@ def home():
 
     # For Weather Underground API data
     weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
-    weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY, today)
+    weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
 
     # For EcoWitt API data
     weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
