@@ -40,9 +40,9 @@ def transform_sun_time(data: dict, today: str) -> dict:
     Log.info(f"Dates to transform: {sunrise_date} - {sunset_date}")
 
     sunrise_date = convert_date(
-        sunrise_date, "UTC", "CEST", "%Y%m%d %I:%M:%S %p")
+        sunrise_date, "UTC", "Europe/Madrid", "%Y%m%d %I:%M:%S %p")
     sunset_date = convert_date(
-        sunset_date, "UTC", "CEST", "%Y%m%d %I:%M:%S %p")
+        sunset_date, "UTC", "Europe/Madrid", "%Y%m%d %I:%M:%S %p")
 
     # Update time fields with the CEST time
     data['results']['sunrise'] = datetime.strftime(sunrise_date, "%H:%M:%S")
@@ -72,13 +72,15 @@ def home():
     sunrise_sunset = transform_sun_time(sunrise_sunset, today)
 
     # Get summary weather data for month and year
-    weather_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
+    month_summary, year_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
 
     return render_template("main.html",
                            weather_data=weather_data,
                            sunrise_sunset=sunrise_sunset,
                            weather_current=weather_current["observations"][0],
-                           weather_day=weather_day["observations"][0])
+                           weather_day=weather_day["observations"][0],
+                           month_summary=month_summary,
+                           year_summary=year_summary)
 
 
 @app.route("/contact")

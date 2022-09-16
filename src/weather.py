@@ -16,7 +16,7 @@ def get_api_data(url: str, date1=None, date2=None):
     # Check if date params have data
     date_from = date1 if date1 else None
     date_to = date2 if date2 else None
-    if date_from and date_to: # Calling to API EcoWitt history 
+    if date_from and date_to:  # Calling to API EcoWitt history
         url += f"&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59"
     Log.debug(f"URL: {url}")
 
@@ -66,13 +66,69 @@ def get_summary_data(url: str) -> dict:
         date_from, date_to = get_month_dates()
         Log.debug(f"Dates for summary month data: {date_from} - {date_to}")
         month_summary = get_api_data(url, date1=date_from, date2=date_to)
+        month_summary = get_summary(month_summary)
 
         date_from, date_to = get_year_dates()
         Log.debug(f"Dates for summary year data: {date_from} - {date_to}")
         year_summary = get_api_data(url, date1=date_from, date2=date_to)
+        year_summary = get_summary(year_summary)
 
-        return {}
+        return month_summary, year_summary
 
     except Exception as err:
         Log.error("Error calculating summary data", err, sys)
+        return {}
+
+
+def get_summary(data: dict) -> dict:
+    """Method to get the min and max data for the information in data
+
+    Args:
+        data (dict): Weather data
+
+    Returns:
+        dict: Weather data calculated
+    """
+    try:
+        Log.info("Getting summary for data...")
+        data_summary = dict()
+        data_summary["temperature"] = get_min_max(
+            data["data"]["outdoor"]["temperature"]["list"])
+        data_summary["wind"] = get_min_max(
+            data["data"]["wind"]["wind_speed"]["list"])
+        data_summary["humidity"] = get_min_max(
+            data["data"]["outdoor"]["humidity"]["list"])
+        data_summary["pressure"] = get_min_max(
+            data["data"]["pressure"]["relative"]["list"])
+        data_summary["uvi"] = get_min_max(
+            data["data"]["solar_and_uvi"]["uvi"]["list"])
+
+        return data_summary
+
+    except Exception as err:
+        Log.error("Error getting summary data", err, sys)
+        return {}
+
+
+def get_min_max(data: dict) -> dict:
+    """Method to get the min and max for a certain param like temperature, wind, etc
+
+    Args:
+        data (dict): Dict of data
+
+    Returns:
+        dict: Max and min for the data
+    """
+    try:
+        Log.info(
+            f"Calculating min and max for data with {len(data)} elements...")
+
+        result = dict(min=min(data.values()), max=max(data.values()))
+        # result = dict(min='{0:.2f}'.format(min(data.values())), max='{0:.2f}'.format(max(data.values())))
+
+        Log.debug(f"The min and max are: {result}")
+        return result
+
+    except Exception as err:
+        Log.error("Error calculating max and min", err, sys)
         return {}
