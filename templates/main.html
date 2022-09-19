@@ -17,10 +17,10 @@
 
 <body>
     <ul class="nav nav-pills">
-        <li class="active"><a class="aboutStyle" href="/#about">Cercedila Weather </a></li>
+        <li class="active"><a class="aboutStyle" href="/#about">Cercedila Weather <img src="/static/assets/logo_app.ico" height="30"></a></li>
+        <!--
         <li><a class="contactStyle" href=""></a></li>
         <li><a class="portfolioStyle" href=""><img src="/static/assets/logo_app.ico" height="30"></a></li>
-        <!--
         <li><a class="contactStyle" href="/#contact"><img src="/static/assets/logo_app.png" height="30"></a></li>
         <li><a class="portfolioStyle" href="/#portfolio"><img src="/static/assets/logo_app.ico" height="30"></a></li>
         -->
@@ -50,15 +50,15 @@
                             <tr>
                                 <!--Temperature-->
                                 <th scope="row"><img src="/static/assets/icons/ico_temp.png" class="iconData"></th>
-                                <td>{{ weather_data.data.outdoor.temperature.value }} {{ weather_data.data.outdoor.temperature.unit }}</td>
-                                <td>{{ weather_day.metric.tempLow }} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ weather_day.metric.tempHigh }} {{ weather_data.data.outdoor.temperature.unit }}</td>
-                                <td>{{ month_summary.temperature.min}} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ month_summary.temperature.max}} {{ weather_data.data.outdoor.temperature.unit }}</td>
-                                <td>{{ year_summary.temperature.min}} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ year_summary.temperature.max}} {{ weather_data.data.outdoor.temperature.unit }}</td>
+                                <td title="Current Temp.">{{ weather_data.data.outdoor.temperature.value }} {{ weather_data.data.outdoor.temperature.unit }}</td>
+                                <td title="Low - High Temp.">{{ weather_day.metric.tempLow }} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ weather_day.metric.tempHigh }} {{ weather_data.data.outdoor.temperature.unit }}</td>
+                                <td title="Low - High Temp.">{{ month_summary.temperature.min}} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ month_summary.temperature.max}} {{ weather_data.data.outdoor.temperature.unit }}</td>
+                                <td title="Low - High Temp.">{{ year_summary.temperature.min}} {{ weather_data.data.outdoor.temperature.unit }} <br> {{ year_summary.temperature.max}} {{ weather_data.data.outdoor.temperature.unit }}</td>
                             </tr>
                             <tr>
                                 <!--Rain-->
                                 <th scope="row"><img src="/static/assets/icons/ico_rain.png" class="iconData"></th>
-                                <td title="Total Precip. Hourly">{{ weather_data.data.rainfall.hourly.value }} {{ weather_data.data.rainfall.hourly.unit }}</td>
+                                <td title="Current Rate">{{ weather_data.data.rainfall.hourly.value }} {{ weather_data.data.rainfall.hourly.unit }}</td>
                                 <td title="Total Precip. Daily">{{ weather_data.data.rainfall.daily.value }} {{ weather_data.data.rainfall.daily.unit }}</td>
                                 <td title="Total Precip. Monthly">{{ weather_data.data.rainfall.monthly.value }} {{ weather_data.data.rainfall.monthly.unit }}</td>
                                 <td title="Total Precip. Yearly">{{ weather_data.data.rainfall.yearly.value }} {{ weather_data.data.rainfall.yearly.unit }}</td>
@@ -90,7 +90,7 @@
                             <tr>
                                 <!--Solar UV-->
                                 <th scope="row"><img src="/static/assets/icons/ico_sun.png" class="iconData"></th>
-                                <td>{{ weather_data.data.solar_and_uvi.uvi.value }} UVI</td>
+                                <td title="Current UV">{{ weather_data.data.solar_and_uvi.uvi.value }} UVI</td>
                                 <td title="High UV">{{ weather_day.uvHigh }} UVI</td>
                                 <td title="High UV">{{ month_summary.uvi.max}} UVI</td>
                                 <td title="High UV">{{ year_summary.uvi.max}} UVI</td>
