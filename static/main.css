@@ -3,6 +3,11 @@
     font-size: 3em;
     background-color: black
 }
+
+.aboutStyle {
+    font-size: 3em;
+}
+
 .aboutPage {
     text-align: center;
     font-size: 3em;
@@ -21,7 +26,7 @@
 }
 
 .aboutPageLayer {
-    padding-top: 10%;
+    padding-top: 15%;
     align-content: center;
     background-color: black;
     height: 100%;
