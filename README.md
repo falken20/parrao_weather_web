@@ -18,19 +18,16 @@ Web to get the summary data from the personal weather station
 https://richionline-portfolio.nw.r.appspot.com
 
 ##### Deploy in Google Cloud Platform using app.yaml
-
 ```
 gcloud app deploy
 ```
 
 ##### Setup
-
 ```bash
 pip install -r requirements.txt
 ```
 
 ##### Running the app
-
 ```bash
 flask run (with .flaskenv)
 ```
@@ -40,19 +37,32 @@ flask run -app PATH_APP
 ```
 
 ##### Setup tests
-
 ```bash
 pip install -r requirements-tests.txt
 ```
 
 ##### Running the tests with pytest and coverage
-
 ```bash
 ./scripts/check_project.sh
 ```
 or
 ```bash
 coverage run -m pytest -v && coverage html --omit=*/venv/*,*/tests/*
+```
+
+##### Environment vars
+```bash
+ENV_PRO=N
+LEVEL_LOG="INFO, WARNING, ERROR"
+
+# Weather Underground API key
+API_KEY_WUNDERGROUND=XXXXx
+STATION_ID=ICERCE9
+
+# Weather EcoWitt API key
+API_KEY_ECOWITT=XXX
+APPLICATION_KEY=XXXX
+STATION_MAC=BC:FF:4D:10:E4:C5
 ```
 ---
 
