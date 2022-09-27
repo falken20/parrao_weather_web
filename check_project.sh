@@ -10,7 +10,7 @@ flake8 main.py ./src/* --count --exit-zero --max-complexity=10 --max-line-length
 
 # Unit test and coverage
 echo "***** Unit Test *****"
-coverage run -m pytest -v 
+coverage run -m pytest -v -s
 echo "***** Coverage tests *****"
 coverage report --omit="*/tests/*,*/venv/*" -m ./*.py ./src/*.py
 
