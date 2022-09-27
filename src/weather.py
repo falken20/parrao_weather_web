@@ -1,12 +1,11 @@
 # by Richi Rod AKA @richionline / falken20
 
 import requests
-import os
 import sys
 import json
 from datetime import datetime, date
 
-from src.logger import Log, console
+from src.logger import Log
 
 
 def get_api_data(url: str, date1=None, date2=None):

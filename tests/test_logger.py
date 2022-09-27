@@ -1,7 +1,6 @@
 from io import StringIO
 import sys
 from src import logger
-import pytest
 
 
 def redirect_stdout():

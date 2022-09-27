@@ -1,6 +1,5 @@
 # by Richi Rod AKA @richionline / falken20
 
-import os
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
@@ -8,8 +7,8 @@ from datetime import datetime
 from src.logger import Log, console
 from src.weather import get_api_data, get_summary_data
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
-                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY,
-                         URL_WEATHER_ECOWITT_HISTOY)
+                        URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY,
+                        URL_WEATHER_ECOWITT_HISTOY)
 from src.utils import convert_date
 
 console.rule("Cercedilla Weather Web")
@@ -54,7 +53,7 @@ def transform_sun_time(data: dict, today: str) -> dict:
 @app.route("/")
 @app.route("/home")
 def home():
-    Log.info(f"Access to home page")
+    Log.info("Access to home page")
     url_for('static', filename='main.css')
 
     today = datetime.today().strftime('%Y%m%d')
