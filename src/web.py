@@ -11,8 +11,6 @@ from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                         URL_WEATHER_ECOWITT_HISTOY)
 from src.utils import convert_date
 
-console.rule("Cercedilla Weather Web")
-
 # Looking for .env file for environment vars
 load_dotenv(find_dotenv())
 
@@ -20,6 +18,12 @@ app = Flask(__name__, template_folder="../templates",
             static_folder="../static")
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+# Cache info
+console.print(f"CACHE: {get_summary_data.cache_info()}", style="yelloW")
+# get_summary_data.cache_clear()
+
+console.rule("Cercedilla Weather Web")
 
 
 def transform_sun_time(data: dict, today: str) -> dict:

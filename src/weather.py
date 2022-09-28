@@ -4,6 +4,7 @@ import requests
 import sys
 import json
 from datetime import datetime, date
+from functools import lru_cache
 
 from src.logger import Log
 
@@ -49,6 +50,7 @@ def get_year_dates():
     return first_year.strftime('%Y%m%d'), current_date.strftime('%Y%m%d')
 
 
+@lru_cache(maxsize=16)
 def get_summary_data(url: str) -> dict:
     """Method to generate a dict object with all summary data weather for a current month
     and current year.
@@ -60,7 +62,7 @@ def get_summary_data(url: str) -> dict:
         dict: Object with al summary data
     """
     try:
-        Log.info("Getting summary data...")
+        Log.info("Getting summary data for current month and current year...")
 
         date_from, date_to = get_month_dates()
         Log.debug(f"Dates for summary month data: {date_from} - {date_to}")
