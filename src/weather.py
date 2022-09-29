@@ -9,7 +9,7 @@ from functools import lru_cache
 from src.logger import Log
 
 
-def get_api_data(url: str, date1=None, date2=None):
+def get_api_data(url: str, cycle_type: str = "1day", date1=None, date2=None):
     """ Process to get current weather data  """
     Log.info(f'Getting weather data ({date1} - {date2})...')
 
@@ -17,7 +17,7 @@ def get_api_data(url: str, date1=None, date2=None):
     date_from = date1 if date1 else None
     date_to = date2 if date2 else None
     if date_from and date_to:  # Calling to API EcoWitt history
-        url += f"&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59"
+        url += f"&cycle_type={cycle_type}&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59"
     Log.debug(f"URL: {url}")
 
     try:
@@ -66,12 +66,14 @@ def get_summary_data(url: str) -> dict:
 
         date_from, date_to = get_month_dates()
         Log.debug(f"Dates for summary month data: {date_from} - {date_to}")
-        month_summary = get_api_data(url, date1=date_from, date2=date_to)
+        month_summary = get_api_data(
+            url, cycle_type="4hour", date1=date_from, date2=date_to)
         month_summary = get_summary(month_summary)
 
         date_from, date_to = get_year_dates()
         Log.debug(f"Dates for summary year data: {date_from} - {date_to}")
-        year_summary = get_api_data(url, date1=date_from, date2=date_to)
+        year_summary = get_api_data(
+            url, cycle_type="1day", date1=date_from, date2=date_to)
         year_summary = get_summary(year_summary)
 
         return month_summary, year_summary
@@ -121,10 +123,12 @@ def get_min_max(data: dict) -> dict:
         dict: Max and min for the data
     """
     try:
-        Log.info(
-            f"Calculating min and max for data with {len(data)} elements...")
+        Log.info(f"Calculating Min/Max for data with {len(data)} elements...")
+        Log.debug(f"Data: {data}")
 
-        result = dict(min=min(data.values()), max=max(data.values()))
+        values = [float(x) for x in list(data.values())]
+        result = dict(min=min(values), max=max(values))
+        # result = dict(min=min(data.values()), max=max(data.values()))
         # result = dict(min='{0:.2f}'.format(min(data.values())), max='{0:.2f}'.format(max(data.values())))
 
         Log.debug(f"The min and max are: {result}")
