@@ -9,7 +9,7 @@ from src.weather import get_api_data, get_summary_data
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY,
                         URL_WEATHER_ECOWITT_HISTOY)
-from src.utils import convert_date
+from src.utils import convert_date, check_cache, previous_cache
 
 # Looking for .env file for environment vars
 load_dotenv(find_dotenv())
@@ -77,13 +77,7 @@ def home():
     # Get summary weather data for month and year
     month_summary, year_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
 
-    # Cache info: 
-    # hits is the number of calls that @lru_cache returned directly from memory because they existed in the cache.
-    # misses is the number of calls that didn’t come from memory and were computed.
-    # maxsize is the size of the cache as you defined it with the maxsize attribute of the decorator.
-    # currsize  is the current size of the cache.
-
-    console.print(f"CACHE: {get_summary_data.cache_info()}", style="yelloW")
+    check_cache(minutes=180)
 
     return render_template("main.html",
                            weather_data=weather_data,

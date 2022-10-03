@@ -25,43 +25,43 @@ console.print(f"LOG LEVEL: {LEVEL_LOG}", style="yellow")
 
 class Log():
     @staticmethod
-    def debug(message):
+    def debug(message, style=style_DEBUG):
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             level = Log.debug.__name__.upper()
 
             if level in LEVEL_LOG.upper():
-                console.print(time, level, message, style=style_DEBUG)
+                console.print(time, level, message, style=style)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
 
     @staticmethod
-    def info(message):
+    def info(message, style=style_INFO):
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             level = Log.info.__name__.upper()
 
             if level in LEVEL_LOG.upper():
-                console.print(time, level, message, style=style_INFO)
+                console.print(time, level, message, style=style)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
 
     @staticmethod
-    def warning(message):
+    def warning(message, style=style_WARNING):
         try:
             time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             level = Log.warning.__name__.upper()
 
             if level in LEVEL_LOG.upper():
-                console.print(time, level, message, style=style_WARNING)
+                console.print(time, level, message, style=style)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)
 
     @staticmethod
-    def error(message, err, sys):
+    def error(message, err, sys, style=style_ERROR):
         """
         Print error in terminal
         Args:
@@ -80,7 +80,7 @@ class Log():
                               f"\nMethod: {sys.exc_info()[2].tb_frame.f_code.co_name} ",
                               f"\nFile: {sys.exc_info()[2].tb_frame.f_code.co_filename} ",
                               f"\nError: {format(err)}",
-                              style=style_ERROR)
+                              style=style)
 
         except Exception as err:
             Log.error("Error to print log", err, sys)

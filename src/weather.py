@@ -7,6 +7,7 @@ from datetime import datetime, date
 from functools import lru_cache
 
 from src.logger import Log
+# from .utils import timed_lru_cache
 
 
 def get_api_data(url: str, cycle_type: str = "1day", date1=None, date2=None):
@@ -50,7 +51,8 @@ def get_year_dates():
     return first_year.strftime('%Y%m%d'), current_date.strftime('%Y%m%d')
 
 
-@lru_cache(maxsize=16)
+@lru_cache(maxsize=5)
+# @timed_lru_cache(seconds=5, maxsize=4) # Personal decorator in utils.py it extends from @lru_cache
 def get_summary_data(url: str) -> dict:
     """Method to generate a dict object with all summary data weather for a current month
     and current year.
