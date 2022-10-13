@@ -70,6 +70,7 @@ STATION_MAC=BC:FF:4D:10:E4:C5
 https://doctest.ecowitt.net/web/#/apiv3en?page_id=17
 
 ##### Doc API wunderground.com
+API Weather Links: https://docs.google.com/spreadsheets/d/1g_gUj-WR_maWQo5XonNlpYNXOv6sZvzpobNjf6pl5UE/edit#gid=0
 API General doc: https://docs.google.com/document/d/1eKCnKXI9xnoMGRRzOL1xPCBihNV2rOet08qpE_gArAY/edit
 API Current conditions: https://ibm.co/v2PWSCC
 
