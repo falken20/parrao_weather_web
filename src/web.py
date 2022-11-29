@@ -6,10 +6,9 @@ from datetime import datetime
 
 from src.logger import Log, console
 from src.weather import get_api_data, get_summary_data
+from src.utils import convert_date, check_cache
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
-                        URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY,
-                        URL_WEATHER_ECOWITT_HISTOY)
-from src.utils import convert_date, check_cache, previous_cache
+                        URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY)
 
 # Looking for .env file for environment vars
 load_dotenv(find_dotenv())

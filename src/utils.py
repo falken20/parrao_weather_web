@@ -4,7 +4,7 @@ from dateutil import tz
 from functools import lru_cache, wraps
 from datetime import datetime, timedelta
 
-from src.logger import Log, console
+from src.logger import Log
 from .weather import get_summary_data
 
 previous_cache = datetime.now()
