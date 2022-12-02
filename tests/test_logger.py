@@ -1,5 +1,7 @@
 from io import StringIO
 import sys
+import unittest
+
 from src import logger
 
 
@@ -11,6 +13,19 @@ def redirect_stdout():
 
 def redirect_reset():
     sys.stdout = sys.__stdout__  # Reset redirect
+
+
+class TestLogger(unittest.TestCase):
+
+    def test_debug_exception(self):
+        logger.LEVEL_LOG = "['DEBUG']"
+        trace = "Test Debug"
+
+        captured_output = redirect_stdout()
+        logger.Log.debug(trace, style="error_style")
+        redirect_reset()
+
+        self.assertIn(trace, captured_output.getvalue())
 
 
 def test_debug():
@@ -84,7 +99,7 @@ def test_error():
     trace = "Test Error"
 
     try:
-        raise(Exception)
+        raise (Exception)
 
     except Exception as err:
         captured_output = redirect_stdout()
@@ -99,7 +114,7 @@ def test_error_no_trace():
     trace = "Test Error"
 
     try:
-        raise(Exception)
+        raise (Exception)
 
     except Exception as err:
         captured_output = redirect_stdout()
