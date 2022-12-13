@@ -1,7 +1,7 @@
 # by Richi Rod AKA @richionline / falken20
 
 __title__ = 'Cercedilla Weather Web'
-__version__ = '1.0.0'
+__version__ = '1.0.2'
 __author__ = 'Falken'
 __url_github__ = 'https://github.com/falken20/'
 __url_twitter__ = 'https://twitter.com/richionline'

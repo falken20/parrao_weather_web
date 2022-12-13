@@ -3,11 +3,13 @@
 from dateutil import tz
 from functools import lru_cache, wraps
 from datetime import datetime, timedelta
+import sys
 
 from src.logger import Log
 from .weather import get_summary_data
 
 previous_cache = datetime.now()
+
 
 def convert_date(date: str, from_zone: str = "UTC", to_zone: str = "Europe/Madrid",
                  format_date: str = "%Y%m%d %I:%M:%S %p") -> str:
@@ -67,7 +69,8 @@ def check_cache(minutes: int = 60):
     # currsize  is the current size of the cache.
     global previous_cache
     Log.info(f"CACHE: {get_summary_data.cache_info()}", style="yelloW")
-    Log.info(f"Checking expiration time for cache({minutes=})...", style="yellow")
+    Log.info(
+        f"Checking expiration time for cache({minutes=})...", style="yellow")
     Log.debug(f"Previous cache: {previous_cache}", style="yellow")
     Log.debug(f"Current time: {datetime.now()}", style="yellow")
     difference = (datetime.now() - previous_cache).seconds / 60
