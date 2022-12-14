@@ -24,7 +24,7 @@ console.print(f"LOG LEVEL: {LEVEL_LOG}", style="yellow")
 
 
 class Log():
-    
+
     @staticmethod
     def debug(message, style=style_DEBUG):
         try:
