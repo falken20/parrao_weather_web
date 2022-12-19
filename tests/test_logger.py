@@ -25,7 +25,6 @@ class TestLogger(unittest.TestCase):
         logger.LEVEL_LOG = "['DEBUG']"
         trace = "Test Debug"
         logger.Log.debug(trace, style="error_style")
-
         print(stdout.getvalue())
         print(stderr.getvalue())
 

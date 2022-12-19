@@ -36,13 +36,18 @@ class TestUtils(unittest.TestCase):
         captured_output = redirect_stdout()
         utils.convert_date("20220101 11:59:00", format_date='%Y%m%d %I:%M:%S')
         redirect_reset()
-
-        print("***", captured_output.getvalue())
         self.assertIn("", captured_output.getvalue())
 
     def test_check_cache(self):
         ret = utils.check_cache(minutes=1)
         print(f"*** {ret}")
+
+    def test_check_cache(self):
+        captured_output = redirect_stdout()
+        utils.check_cache(0)
+        redirect_reset()
+        print(captured_output.getvalue())
+        self.assertEqual(True, True)
 
 
 if __name__ == '__main__':
