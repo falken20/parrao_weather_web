@@ -22,12 +22,12 @@ class TestUtils(unittest.TestCase):
     def test_convert_date_exception(self):
         self.assertRaises(ValueError, utils.convert_date, "")
 
-    @patch('sys.stdout', new_callable=StringIO)
+    # @patch('sys.stdin', StringIO('Writing...\n'))  # Simulate user input
     @patch('sys.stderr', new_callable=StringIO)
-    @patch('sys.stdin', StringIO('Writing...\n'))  # Simulate user input
+    @patch('sys.stdout', new_callable=StringIO)
     def test_convert_date(self, stdout, stderr):
         utils.convert_date("20220101 11:59:00 PM")
-
+        print("Prueba de stdout")
         print(stdout.getvalue())
         print(stderr.getvalue())
         self.assertIn("", stdout.getvalue())
@@ -39,15 +39,10 @@ class TestUtils(unittest.TestCase):
         self.assertIn("", captured_output.getvalue())
 
     def test_check_cache(self):
-        ret = utils.check_cache(minutes=1)
-        print(f"*** {ret}")
-
-    def test_check_cache(self):
         captured_output = redirect_stdout()
-        utils.check_cache(0)
+        ret = utils.check_cache(minutes=1)
         redirect_reset()
         print(captured_output.getvalue())
-        self.assertEqual(True, True)
 
 
 if __name__ == '__main__':
