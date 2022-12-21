@@ -1,6 +1,6 @@
 <div align="center">
 <img src="./static/assets/logo_app.png" alt="drawing" width="400"/>
-<a href="https://richionline-portfolio.nw.r.appspot.com"><img src="https://falken-home.herokuapp.com/static/home_project/img/falken_logo.png" width=50 alt="Personal Portfolio web"></a>
+<a href="https://richionline-portfolio.nw.r.appspot.com"><img src="https://richionline-portfolio.nw.r.appspot.com/static/assets/falken_logo.ico" width=40 alt="Personal Portfolio web"></a>
 
 ![Version](https://img.shields.io/badge/version-1.0.2-blue) ![GitHub language count](https://img.shields.io/github/languages/count/falken20/parrao_weather_web) ![GitHub Top languaje](https://img.shields.io/github/languages/top/falken20/parrao_weather_web) ![Test coverage](https://img.shields.io/badge/test%20coverage-83%25-green) ![GitHub License](https://img.shields.io/github/license/falken20/search_extensions)
 
