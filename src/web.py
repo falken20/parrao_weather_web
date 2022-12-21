@@ -85,13 +85,3 @@ def home():
                            weather_day=weather_day["observations"][0],
                            month_summary=month_summary,
                            year_summary=year_summary)
-
-
-@app.route("/contact")
-def contact():
-    return render_template("contact.html")
-
-
-@app.route("/portfolio")
-def portfolio():
-    return render_template("portfolio.html")
