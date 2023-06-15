@@ -73,7 +73,8 @@
                                 <td title="Current Rate">{{ weather_data.data.rainfall.hourly.value }} {{ weather_data.data.rainfall.hourly.unit }}</td>
                                 <td title="Total Precip. Daily">{{ weather_data.data.rainfall.daily.value }} {{ weather_data.data.rainfall.daily.unit }}</td>
                                 <td title="Total Precip. Monthly">{{ weather_data.data.rainfall.monthly.value }} {{ weather_data.data.rainfall.monthly.unit }}</td>
-                                <td title="Total Precip. Yearly">{{ weather_data.data.rainfall.yearly.value }} {{ weather_data.data.rainfall.yearly.unit }}</td>
+                                <!-- <td title="Total Precip. Yearly">{{ weather_data.data.rainfall.yearly.value }} {{ weather_data.data.rainfall.yearly.unit }}</td> -->
+                                <td title="Total Precip. Yearly">{{ year_summary.rainfall }} {{ weather_data.data.rainfall.yearly.unit }}</td>
                             </tr>
                             <tr>
                                 <!--Wind-->

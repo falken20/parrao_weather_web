@@ -108,6 +108,11 @@ def get_summary(data: dict) -> dict:
         data_summary["uvi"] = get_min_max(
             data["data"]["solar_and_uvi"]["uvi"]["list"])
 
+        # For raining year rate we have to subtract min for max value
+        data_summary["rainfall"] = get_min_max(
+            data["data"]["rainfall"]["yearly"]["list"])
+        data_summary["rainfall"] = data_summary["rainfall"]["max"] - data_summary["rainfall"]["min"]
+
         return data_summary
 
     except Exception as err:

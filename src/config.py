@@ -25,6 +25,7 @@ URL_WEATHER_ECOWITT_HISTOY = f"https://api.ecowitt.net/api/v3/device/history?app
     f"&api_key={API_KEY_ECOWITT}&mac={STATION_MAC}" \
     f"&temp_unitid=1&pressure_unitid=3&wind_speed_unitid=7&rainfall_unitid=12" \
     f"&call_back=outdoor.temperature,outdoor.humidity,wind.wind_speed,pressure.relative,solar_and_uvi.uvi" \
+    f",rainfall.yearly"
     # f"&cycle_type=1day&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59" \
 
 # API by https://sunrise-sunset.org/api
