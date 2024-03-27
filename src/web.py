@@ -78,6 +78,9 @@ def home():
 
     check_cache(minutes=180)
 
+    # Format year summary rain to 2 decimals
+    year_summary['rainfall'] = "{:.2f}".format(float(year_summary['rainfall']))
+
     return render_template("main.html",
                            weather_data=weather_data,
                            sunrise_sunset=sunrise_sunset,
