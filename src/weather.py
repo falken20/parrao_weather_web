@@ -131,7 +131,7 @@ def get_min_max(data: dict) -> dict:
     """
     try:
         Log.info(f"Calculating Min/Max for data with {len(data)} elements...")
-        Log.debug(f"Data: {data}")
+        # Log.debug(f"Data: {data}")
 
         values = [float(x) for x in list(data.values())]
         result = dict(min=min(values), max=max(values))
