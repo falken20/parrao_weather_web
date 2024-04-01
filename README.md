@@ -2,7 +2,7 @@
 <img src="./static/assets/logo_app.png" alt="drawing" width="400"/>
 <a href="https://richionline-portfolio.nw.r.appspot.com"><img src="https://richionline-portfolio.nw.r.appspot.com/static/assets/falken_logo.ico" width=40 alt="Personal Portfolio web"></a>
 
-![Version](https://img.shields.io/badge/version-1.0.3-blue) ![GitHub language count](https://img.shields.io/github/languages/count/falken20/parrao_weather_web) ![GitHub Top languaje](https://img.shields.io/github/languages/top/falken20/parrao_weather_web) ![Test coverage](https://img.shields.io/badge/test%20coverage-92%25-green) ![GitHub License](https://img.shields.io/github/license/falken20/search_extensions)
+![Version](https://img.shields.io/badge/version-1.0.4-blue) ![GitHub language count](https://img.shields.io/github/languages/count/falken20/parrao_weather_web) ![GitHub Top languaje](https://img.shields.io/github/languages/top/falken20/parrao_weather_web) ![Test coverage](https://img.shields.io/badge/test%20coverage-92%25-green) ![GitHub License](https://img.shields.io/github/license/falken20/search_extensions)
 
 
 [![Richi web](https://img.shields.io/badge/web-richionline-blue)](https://richionline-portfolio.nw.r.appspot.com) [![Twitter](https://img.shields.io/twitter/follow/richionline?style=social)](https://twitter.com/richionline)
@@ -79,6 +79,7 @@ https://icons8.com/
 
 ##### Versions
 
+1.0.4 Control error when no data in month or year
 1.0.3 Format year summary rain to 2 decimal
 1.0.2 Unit tests
 1.0.1 Some bugs fixed and UX details

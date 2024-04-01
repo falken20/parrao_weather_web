@@ -97,6 +97,16 @@ def get_summary(data: dict) -> dict:
     try:
         Log.info("Getting summary for data...")
         data_summary = dict()
+        if not data["data"]:
+            Log.debug("Data is empty, returning '-' values in the dict...", style="red")
+            data_summary["temperature"] = "-"
+            data_summary["wind"] = "-"
+            data_summary["humidity"] = "-"
+            data_summary["pressure"] = "-"
+            data_summary["uvi"] = "-"
+            data_summary["rainfall"] = "-"
+            return data_summary
+
         data_summary["temperature"] = get_min_max(
             data["data"]["outdoor"]["temperature"]["list"])
         data_summary["wind"] = get_min_max(
@@ -107,7 +117,6 @@ def get_summary(data: dict) -> dict:
             data["data"]["pressure"]["relative"]["list"])
         data_summary["uvi"] = get_min_max(
             data["data"]["solar_and_uvi"]["uvi"]["list"])
-
         # For raining year rate we have to subtract min for max value
         data_summary["rainfall"] = get_min_max(
             data["data"]["rainfall"]["yearly"]["list"])
