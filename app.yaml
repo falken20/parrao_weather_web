@@ -1,5 +1,5 @@
 # https://cloud.google.com/appengine/docs/standard/python3/runtime#python-3.8
-runtime: python38
+runtime: python310
 instance_class: F1
 
 # It is not neccesary because search for main.py in root with object app 

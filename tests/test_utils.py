@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from io import StringIO
 import sys
+import time
 
 from src import utils
 from src import logger
