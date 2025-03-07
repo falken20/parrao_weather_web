@@ -5,10 +5,10 @@ html {
 body {
     overflow: auto; /* Show scrollbars */
     overflow-y: scroll;
-    background-image: url('/static/assets/background.jpg');
+    background-image: url('/static/assets/bg-color.jpg');
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: left;
+    background-position: center;
 }
 
 .section {
@@ -41,8 +41,8 @@ body {
 }
 
 .aboutPageLayer {
-    padding-top: 15%;
-    align-content: center;
+    padding-top: 10%;
+    align-content: top;
     background-color: black;
     height: 100%;
     width: 100%;
