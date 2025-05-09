@@ -85,12 +85,12 @@ def home():
             year_summary['rainfall'] = "{:.2f}".format(float(year_summary['rainfall']))
 
         return render_template("main.html",
-                            weather_data=weather_data,
-                            sunrise_sunset=sunrise_sunset,
-                            weather_current=weather_current["observations"][0],
-                            weather_day=weather_day["observations"][0],
-                            month_summary=month_summary,
-                            year_summary=year_summary)
+                               weather_data=weather_data,
+                               sunrise_sunset=sunrise_sunset,
+                               weather_current=weather_current["observations"][0],
+                               weather_day=weather_day["observations"][0],
+                               month_summary=month_summary,
+                               year_summary=year_summary)
     except KeyError as e:
         Log.error(f"KeyError in home page: {e}", err=e, sys=sys)
         return render_template("error.html", message="Data processing error occurred"), 500

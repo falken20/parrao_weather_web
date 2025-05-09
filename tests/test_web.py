@@ -1,5 +1,8 @@
 import unittest
 from unittest.mock import patch
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 from src import web
 

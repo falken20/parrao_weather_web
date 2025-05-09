@@ -50,7 +50,7 @@ class TestUtils(unittest.TestCase):
     def test_check_cache_expiration(self, mock_get_summary_data):
         # Mock the cache info and simulate expiration
         mock_get_summary_data.cache_info.return_value = "Cache Info Mocked"
-        utils.previous_cache = datetime.now() - timedelta(minutes=2)
+        utils.previous_cache = datetime.now() - timedelta(minutes=62)
         captured_output = redirect_stdout()
         utils.check_cache(minutes=1)
         redirect_reset()
