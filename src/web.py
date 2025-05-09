@@ -3,6 +3,7 @@
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
+import sys
 
 from src.logger import Log, console
 from src.weather import get_api_data, get_summary_data
@@ -56,36 +57,46 @@ def transform_sun_time(data: dict, today: str) -> dict:
 @app.route("/")
 @app.route("/home")
 def home():
-    Log.info("Access to home page")
-    url_for('static', filename='main.css')
+    try:
+        Log.info("Access to home page")
+        url_for('static', filename='main.css')
 
-    today = datetime.today().strftime('%Y%m%d')
+        today = datetime.today().strftime('%Y%m%d')
 
-    # For Weather Underground API data
-    weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
-    weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
+        # For Weather Underground API data
+        weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
+        weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
 
-    # For EcoWitt API data
-    weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
+        # For EcoWitt API data
+        weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
 
-    # For SunSet-Sunrise API data
-    sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET)
-    # Convert UTC time to CEST time
-    sunrise_sunset = transform_sun_time(sunrise_sunset, today)
+        # For SunSet-Sunrise API data
+        sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET)
+        # Convert UTC time to CEST time
+        sunrise_sunset = transform_sun_time(sunrise_sunset, today)
 
-    # Get summary weather data for month and year
-    month_summary, year_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
+        # Get summary weather data for month and year
+        month_summary, year_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
 
-    check_cache(minutes=180)
+        check_cache(minutes=180)
 
-    # Format year summary rain to 2 decimals
-    if isinstance(year_summary["rainfall"], float):
-        year_summary['rainfall'] = "{:.2f}".format(float(year_summary['rainfall']))
+        # Format year summary rain to 2 decimals
+        if isinstance(year_summary["rainfall"], float):
+            year_summary['rainfall'] = "{:.2f}".format(float(year_summary['rainfall']))
 
-    return render_template("main.html",
-                           weather_data=weather_data,
-                           sunrise_sunset=sunrise_sunset,
-                           weather_current=weather_current["observations"][0],
-                           weather_day=weather_day["observations"][0],
-                           month_summary=month_summary,
-                           year_summary=year_summary)
+        return render_template("main.html",
+                               weather_data=weather_data,
+                               sunrise_sunset=sunrise_sunset,
+                               weather_current=weather_current["observations"][0],
+                               weather_day=weather_day["observations"][0],
+                               month_summary=month_summary,
+                               year_summary=year_summary)
+    except KeyError as e:
+        Log.error(f"KeyError in home page: {e}", err=e, sys=sys)
+        return render_template("error.html", message="Data processing error occurred"), 500
+    except ValueError as e:
+        Log.error(f"ValueError in home page: {e}", err=e, sys=sys)
+        return render_template("error.html", message="Website under maintenance"), 500
+    except Exception as e:
+        Log.error(f"Exception in home page: {e}", err=e, sys=sys)
+        return render_template("error.html", message="Website under maintenance"), 500

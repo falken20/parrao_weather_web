@@ -3,6 +3,7 @@ from unittest.mock import patch
 from io import StringIO
 import sys
 import time
+from datetime import datetime, timedelta
 
 from src import utils
 from src import logger
@@ -44,6 +45,17 @@ class TestUtils(unittest.TestCase):
         ret = utils.check_cache(minutes=1)
         redirect_reset()
         print(captured_output.getvalue())
+
+    @patch("src.weather.get_summary_data")
+    def test_check_cache_expiration(self, mock_get_summary_data):
+        # Mock the cache info and simulate expiration
+        mock_get_summary_data.cache_info.return_value = "Cache Info Mocked"
+        utils.previous_cache = datetime.now() - timedelta(minutes=62)
+        captured_output = redirect_stdout()
+        utils.check_cache(minutes=1)
+        redirect_reset()
+        output = captured_output.getvalue()
+        self.assertIn("Cleaning cache by expiration...", output)
 
 
 if __name__ == '__main__':
