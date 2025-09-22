@@ -6,6 +6,7 @@ from rich.console import Console
 from rich.style import Style
 from datetime import datetime
 from dotenv import load_dotenv, find_dotenv
+import pprint
 
 # Load .env file
 load_dotenv(find_dotenv())
@@ -24,6 +25,23 @@ console.print(f"LOG LEVEL: {LEVEL_LOG}", style="yellow")
 
 
 class Log():
+
+    @staticmethod
+    def info_dict(message: str = "", dict_obj: dict = None, level_log: str = "INFO"):
+        try:
+            if level_log in LEVEL_LOG.upper():
+                if level_log == "INFO":
+                    Log.info(message)
+                elif level_log == "DEBUG":
+                    Log.debug(message)
+                elif level_log == "WARNING":
+                    Log.warning(message)
+                elif level_log == "ERROR":
+                    Log.error(message)
+                pprint.pprint(dict_obj)
+
+        except Exception as err:
+            Log.error("Error to print log", err, sys)
 
     @staticmethod
     def debug(message, style=style_DEBUG):

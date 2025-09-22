@@ -84,6 +84,8 @@ def home():
         if isinstance(year_summary["rainfall"], float):
             year_summary['rainfall'] = "{:.2f}".format(float(year_summary['rainfall']))
 
+        Log.info_dict("Weather data", weather_data, "DEBUG")
+
         return render_template("main.html",
                                weather_data=weather_data,
                                sunrise_sunset=sunrise_sunset,

@@ -6,6 +6,9 @@ coverage run -m pytest -v -s
 echo "***** Coverage tests *****"
 coverage report --omit="*/tests/*,*/venv/*" -m ./*.py ./src/*.py
 
+# Tests about a method
+# pytest -v -s tests/test_weather.py::test_get_summary_data_logic
+
 # Coverage report in html
 # coverage run -m pytest -v && coverage html --omit="*/test/*,*/venv/*"
 

@@ -43,7 +43,10 @@ def test_get_summary_data_logic(mock_get_year_dates, mock_get_month_dates, mock_
     }
 
     # Call the function
-    result = weather.get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
+    url = URL_WEATHER_ECOWITT_HISTOY + "&start_date=20230101&end_date=20230131"
+    print(f"\n*** Calling get_summary_data with URL: {url}")
+    result = weather.get_summary_data(url)
+    print(f"\n*** Result: {result}")
 
     # Assertions
     assert "temperature" in result[0]

@@ -96,6 +96,7 @@ def get_summary(data: dict) -> dict:
     """
     try:
         Log.info("Getting summary for data...")
+        Log.info_dict("Data dict:", data, "DEBUG")
         data_summary = dict()
         if not data["data"]:
             Log.debug("Data is empty, returning '-' values in the dict...", style="red")
