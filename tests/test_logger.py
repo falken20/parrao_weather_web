@@ -33,16 +33,27 @@ class TestLogger(unittest.TestCase):
 
 
 def test_info_dict():
-    logger.LEVEL_LOG = "['INFO']"
+    logger.LEVEL_LOG = "['INFO', 'DEBUG', 'ERROR', 'WARNING']"
     trace = {"Test": "Info"}
 
     captured_output = redirect_stdout()
-    logger.Log.info_dict(trace)
+    logger.Log.info_dict(dict_obj=trace, level_log="INFO")
     redirect_reset()
+    assert "Test" in captured_output.getvalue()
+    assert "Info" in captured_output.getvalue()
 
-    logger.Log.info(str(trace))
+    captured_output = redirect_stdout()
+    logger.Log.info_dict(dict_obj=trace, level_log="DEBUG")
+    redirect_reset()
+    assert "Test" in captured_output.getvalue()
+    assert "Info" in captured_output.getvalue()
 
-    assert str(trace) in captured_output.getvalue()
+    captured_output = redirect_stdout()
+    logger.Log.info_dict(dict_obj=trace, level_log="WARNING")
+    redirect_reset()
+    assert "Test" in captured_output.getvalue()
+    assert "Info" in captured_output.getvalue()
+
 
 def test_debug():
     logger.LEVEL_LOG = "['DEBUG']"

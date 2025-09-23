@@ -36,8 +36,7 @@ class Log():
                     Log.debug(message)
                 elif level_log == "WARNING":
                     Log.warning(message)
-                elif level_log == "ERROR":
-                    Log.error(message)
+
                 pprint.pprint(dict_obj)
 
         except Exception as err:
