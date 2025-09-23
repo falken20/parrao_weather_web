@@ -32,6 +32,18 @@ class TestLogger(unittest.TestCase):
         self.assertEqual(True, True)
 
 
+def test_info_dict():
+    logger.LEVEL_LOG = "['INFO']"
+    trace = {"Test": "Info"}
+
+    captured_output = redirect_stdout()
+    logger.Log.info_dict(trace)
+    redirect_reset()
+
+    logger.Log.info(str(trace))
+
+    assert str(trace) in captured_output.getvalue()
+
 def test_debug():
     logger.LEVEL_LOG = "['DEBUG']"
     trace = "Test Debug"
@@ -40,7 +52,9 @@ def test_debug():
     logger.Log.debug(trace)
     redirect_reset()
 
-    assert trace in captured_output.getvalue()
+    tmp = captured_output.getvalue()
+    logger.Log.debug(f"*** tmp: {tmp}")
+    assert str(trace) in captured_output.getvalue()
 
 
 def test_debug_no_trace():

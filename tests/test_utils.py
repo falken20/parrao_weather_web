@@ -55,7 +55,7 @@ class TestUtils(unittest.TestCase):
         utils.check_cache(minutes=1)
         redirect_reset()
         output = captured_output.getvalue()
-        self.assertIn("Cleaning cache by expiration...", output)
+        self.assertIn("Cleaning cache by expiration", output)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from src import weather, web
+from src import logger
 
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY)
@@ -14,14 +15,14 @@ def test_get_summary_data():
     stmt = "weather.get_summary_data(web.URL_WEATHER_ECOWITT_HISTOY)"
     times = repeat(setup=setup_code, stmt=stmt, repeat=4, number=2)
 
-    print(f"\n*** Execution params: -Repeat: 4, - Times: 2")
-    print(f"*** Execution times: {times}")
-    print(f"*** Minimum execution time: {min(times)}")
+    logger.Log.debug(f"*** Execution params: -Repeat: 4, - Times: 2")
+    logger.Log.debug(f"*** Execution times: {times}")
+    logger.Log.debug(f"*** Minimum execution time: {min(times)}")
     
-    print(f"*** Current Cache info: {weather.get_summary_data.cache_info()}")
+    logger.Log.debug(f"*** Current Cache info: {weather.get_summary_data.cache_info()}")
     # cleaning cache
     weather.get_summary_data.cache_clear()
-    print(f"*** Cleaning Cache info: {weather.get_summary_data.cache_info()}")
+    logger.Log.debug(f"*** Cleaning Cache info: {weather.get_summary_data.cache_info()}")
 
 
 @patch("src.weather.get_api_data")
@@ -33,9 +34,9 @@ def test_get_summary_data_logic(mock_get_year_dates, mock_get_month_dates, mock_
     mock_get_year_dates.return_value = ("20230101", "20231231")
     mock_get_api_data.return_value = {
         "data": {
-            "outdoor": {"temperature": {"list": {"1": "10", "2": "20"}}},
+            "outdoor": {"temperature": {"list": {"1": "10", "2": "20"}}, 
+                        "humidity": {"list": {"1": "30", "2": "50"}}},
             "wind": {"wind_speed": {"list": {"1": "5", "2": "15"}}},
-            "outdoor": {"humidity": {"list": {"1": "30", "2": "50"}}},
             "pressure": {"relative": {"list": {"1": "1000", "2": "1020"}}},
             "solar_and_uvi": {"uvi": {"list": {"1": "1", "2": "3"}}},
             "rainfall": {"yearly": {"list": {"1": "100", "2": "200"}}},
@@ -44,9 +45,9 @@ def test_get_summary_data_logic(mock_get_year_dates, mock_get_month_dates, mock_
 
     # Call the function
     url = URL_WEATHER_ECOWITT_HISTOY + "&start_date=20230101&end_date=20230131"
-    print(f"\n*** Calling get_summary_data with URL: {url}")
+    logger.Log.debug(f"*** Calling get_summary_data with URL: \n{url}")
     result = weather.get_summary_data(url)
-    print(f"\n*** Result: {result}")
+    logger.Log.debug(f"*** Result: \n{result}")
 
     # Assertions
     assert "temperature" in result[0]
@@ -92,9 +93,9 @@ def test_get_summary(mock_get_min_max):
 
     data = {
         "data": {
-            "outdoor": {"temperature": {"list": {"1": "10", "2": "20"}}},
+            "outdoor": {"temperature": {"list": {"1": "10", "2": "20"}}, 
+                        "humidity": {"list": {"1": "30", "2": "50"}}},
             "wind": {"wind_speed": {"list": {"1": "5", "2": "15"}}},
-            "outdoor": {"humidity": {"list": {"1": "30", "2": "50"}}},
             "pressure": {"relative": {"list": {"1": "1000", "2": "1020"}}},
             "solar_and_uvi": {"uvi": {"list": {"1": "1", "2": "3"}}},
             "rainfall": {"yearly": {"list": {"1": "100", "2": "200"}}},
