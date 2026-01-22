@@ -64,18 +64,23 @@ def home():
         today = datetime.today().strftime('%Y%m%d')
 
         # For Weather Underground API data
+        Log.info("Getting weather Wunderground current...")
         weather_current = get_api_data(URL_WEATHER_WUNDERGROUND_CURRENT)
+        Log.info("Getting weather Wunderground day...")
         weather_day = get_api_data(URL_WEATHER_WUNDERGROUND_DAY)
 
         # For EcoWitt API data
+        Log.info("Getting weather Ecowitt current...")
         weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
 
         # For SunSet-Sunrise API data
+        Log.info("Getting sunrise-sunset...")
         sunrise_sunset = get_api_data(URL_SUNRISE_SUNSET)
         # Convert UTC time to CEST time
         sunrise_sunset = transform_sun_time(sunrise_sunset, today)
 
         # Get summary weather data for month and year
+        Log.info("Getting weather Ecowitt history...")
         month_summary, year_summary = get_summary_data(URL_WEATHER_ECOWITT_HISTOY)
 
         check_cache(minutes=180)

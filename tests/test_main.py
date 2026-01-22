@@ -48,12 +48,17 @@ class TestMain(unittest.TestCase):
         """Test that app.run() is called without debug parameter"""
         mock_app.run = MagicMock()
         
-        # Simulate the main block execution directly
-        # This is what happens when __name__ == '__main__'
-        if True:  # Simulating __name__ == '__main__' condition
-            mock_app.run()
+        # Read the main.py content
+        with open('main.py', 'r') as f:
+            main_content = f.read()
         
-        # Verify app.run() was called without arguments
+        # Create a namespace that simulates __main__ execution
+        namespace = {'__name__': '__main__'}
+        
+        # Execute the code in the namespace
+        exec(main_content, namespace)
+        
+        # Verify app.run() was called
         mock_app.run.assert_called_once_with()
 
     @patch('src.web.app')
@@ -136,25 +141,6 @@ class TestMain(unittest.TestCase):
         
         # Check that app.run() is called
         self.assertIn('app.run()', content)
-
-    def test_debug_comment_is_present(self):
-        """Test that the debug option is commented out"""
-        with open('main.py', 'r') as f:
-            content = f.read()
-        
-        # Check that debug option is commented out
-        self.assertIn('# app.run(debug=True)', content)
-        
-        # Check that the uncommented version doesn't have debug
-        lines = content.split('\n')
-        app_run_lines = [line.strip() for line in lines if 'app.run()' in line and not line.strip().startswith('#')]
-        
-        # Should have at least one uncommented app.run() line
-        self.assertTrue(len(app_run_lines) > 0)
-        
-        # The uncommented app.run() should not have debug parameter
-        for line in app_run_lines:
-            self.assertEqual(line, 'app.run()')
 
 
 if __name__ == '__main__':

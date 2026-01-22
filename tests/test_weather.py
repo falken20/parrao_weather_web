@@ -7,7 +7,14 @@ from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY)
 
 
+@pytest.mark.performance
 def test_get_summary_data():
+    """Performance test: measures execution time of get_summary_data with caching.
+    
+    This test uses timeit to measure cache effectiveness by running the function
+    multiple times. It's marked as a performance test and can be skipped in regular
+    test runs using: pytest -m "not performance"
+    """
     # Test the time for getting data from url using timeit.repeat
     from timeit import repeat
 
@@ -29,9 +36,20 @@ def test_get_summary_data():
 @patch("src.weather.get_month_dates")
 @patch("src.weather.get_year_dates")
 def test_get_summary_data_logic(mock_get_year_dates, mock_get_month_dates, mock_get_api_data):
+    """Test get_summary_data logic with mocked dependencies.
+    
+    Mock data structure simulates EcoWitt API response with:
+    - Temperature: min=10, max=20
+    - Humidity: min=30, max=50  
+    - Wind speed: min=5, max=15
+    - Pressure: min=1000, max=1020
+    - UVI: min=1, max=3
+    - Rainfall: yearly total=100
+    """
     # Mocking the dependencies
     mock_get_month_dates.return_value = ("20230101", "20230131")
     mock_get_year_dates.return_value = ("20230101", "20231231")
+    # Mock API response structure matching EcoWitt format
     mock_get_api_data.return_value = {
         "data": {
             "outdoor": {"temperature": {"list": {"1": "10", "2": "20"}}, 

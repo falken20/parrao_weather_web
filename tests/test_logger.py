@@ -18,18 +18,18 @@ def redirect_reset():
 
 class TestLogger(unittest.TestCase):
 
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('sys.stderr', new_callable=StringIO)
-    @patch('sys.stdin', StringIO('Writing...\n'))  # Simulate user input
-    def test_debug_exception(self, stdout, stderr):
+    @patch('src.logger.console.print')
+    def test_debug_exception(self, mock_print):
+        """Test debug logging with error_style"""
         logger.LEVEL_LOG = "['DEBUG']"
         trace = "Test Debug"
         logger.Log.debug(trace, style="error_style")
-        print(stdout.getvalue())
-        print(stderr.getvalue())
-
-        #self.assertIn(trace, stdout.getvalue())
-        self.assertEqual(True, True)
+        
+        # Verify that console.print was called with the debug message
+        mock_print.assert_called()
+        # Check if trace appears in any of the calls
+        call_args = str(mock_print.call_args)
+        self.assertIn(trace, call_args)
 
 
 def test_info_dict():
