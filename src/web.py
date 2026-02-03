@@ -27,29 +27,39 @@ console.rule("Cercedilla Weather Web")
 
 
 def transform_sun_time(data: dict, today: str) -> dict:
-    """Transform time in UTC format from dict obj to CEST format
+    """Transform sunrise/sunset time in UTC format to CEST.
 
     Args:
         data (dict): Struct from API data
         today (str): Today date
 
     Returns:
-        _type_: Struct with dates in CEST formar
+        dict: Struct with dates in CEST format
     """
+    results = data.get("results")
+    if not isinstance(results, dict):
+        raise KeyError("results")
+
+    sunrise = results.get("sunrise")
+    sunset = results.get("sunset")
+    if sunrise is None or sunset is None:
+        raise KeyError("sunrise/sunset")
+
     Log.info(f"Dictionary dates: {data}")
     # Set "%Y%m%d %I:%M:%S %p" format
-    sunrise_date = f"{today} {data['results']['sunrise']}"
-    sunset_date = f"{today} {data['results']['sunset']}"
-    Log.info(f"Dates to transform: {sunrise_date} - {sunset_date}")
+    sunrise_date_str = f"{today} {sunrise}"
+    sunset_date_str = f"{today} {sunset}"
+    Log.info(f"Dates to transform: {sunrise_date_str} - {sunset_date_str}")
 
+    date_format = "%Y%m%d %I:%M:%S %p"
     sunrise_date = convert_date(
-        sunrise_date, "UTC", "Europe/Madrid", "%Y%m%d %I:%M:%S %p")
+        sunrise_date_str, "UTC", "Europe/Madrid", date_format)
     sunset_date = convert_date(
-        sunset_date, "UTC", "Europe/Madrid", "%Y%m%d %I:%M:%S %p")
+        sunset_date_str, "UTC", "Europe/Madrid", date_format)
 
     # Update time fields with the CEST time
-    data['results']['sunrise'] = datetime.strftime(sunrise_date, "%H:%M:%S")
-    data['results']['sunset'] = datetime.strftime(sunset_date, "%H:%M:%S")
+    results["sunrise"] = datetime.strftime(sunrise_date, "%H:%M:%S")
+    results["sunset"] = datetime.strftime(sunset_date, "%H:%M:%S")
 
     return data
 
