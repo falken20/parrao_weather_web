@@ -140,5 +140,49 @@ class TestWeb(unittest.TestCase):
         root_response = self.app.get("/")
         self.assertEqual(root_response.status_code, response.status_code)
 
+    @patch("src.web.get_api_data")
+    def test_rain_today_true(self, mock_get_api_data):
+        """Test rain endpoint returns true when daily rainfall is above zero"""
+        mock_get_api_data.return_value = {
+            'data': {
+                'rainfall': {
+                    'daily': {'value': '1.5', 'unit': 'mm'}
+                }
+            }
+        }
+
+        response = self.app.get("/api/rain-today")
+        self.assertEqual(200, response.status_code)
+        payload = response.get_json()
+        self.assertEqual(True, payload["rained_today"])
+        self.assertEqual(1.5, payload["rainfall_daily_mm"])
+
+    @patch("src.web.get_api_data")
+    def test_rain_today_false(self, mock_get_api_data):
+        """Test rain endpoint returns false when daily rainfall is zero"""
+        mock_get_api_data.return_value = {
+            'data': {
+                'rainfall': {
+                    'daily': {'value': '0', 'unit': 'mm'}
+                }
+            }
+        }
+
+        response = self.app.get("/api/rain-today")
+        self.assertEqual(200, response.status_code)
+        payload = response.get_json()
+        self.assertEqual(False, payload["rained_today"])
+        self.assertEqual(0.0, payload["rainfall_daily_mm"])
+
+    @patch("src.web.get_api_data")
+    def test_rain_today_key_error(self, mock_get_api_data):
+        """Test rain endpoint handles missing data gracefully"""
+        mock_get_api_data.return_value = {'data': {}}
+
+        response = self.app.get("/api/rain-today")
+        self.assertEqual(500, response.status_code)
+        payload = response.get_json()
+        self.assertEqual("Data processing error occurred", payload["error"])
+
 if __name__ == "__main__":
     unittest.main()

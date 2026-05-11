@@ -1,6 +1,6 @@
 # by Richi Rod AKA @richionline / falken20
 
-from flask import Flask, render_template, url_for
+from flask import Flask, jsonify, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
 import sys
@@ -64,6 +64,28 @@ def transform_sun_time(data: dict, today: str) -> dict:
     return data
 
 
+def get_rain_today() -> tuple:
+    """Return whether it has rained today based on EcoWitt daily rainfall."""
+    try:
+        Log.info("Getting rain status for today...")
+        weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
+        rainfall_daily = float(weather_data["data"]["rainfall"]["daily"]["value"])
+
+        return jsonify({
+            "rained_today": rainfall_daily > 0,
+            "rainfall_daily_mm": rainfall_daily,
+        }), 200
+    except KeyError as e:
+        Log.error(f"KeyError in rain today endpoint: {e}", err=e, sys=sys)
+        return jsonify({"error": "Data processing error occurred"}), 500
+    except (TypeError, ValueError) as e:
+        Log.error(f"ValueError in rain today endpoint: {e}", err=e, sys=sys)
+        return jsonify({"error": "Data processing error occurred"}), 500
+    except Exception as e:
+        Log.error(f"Exception in rain today endpoint: {e}", err=e, sys=sys)
+        return jsonify({"error": "Website under maintenance"}), 500
+
+
 @app.route("/")
 @app.route("/home")
 def home():
@@ -117,3 +139,8 @@ def home():
     except Exception as e:
         Log.error(f"Exception in home page: {e}", err=e, sys=sys)
         return render_template("error.html", message="Website under maintenance"), 500
+
+
+@app.route("/api/rain-today")
+def rain_today():
+    return get_rain_today()
