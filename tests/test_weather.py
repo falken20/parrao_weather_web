@@ -125,3 +125,43 @@ def test_get_summary(mock_get_min_max):
     assert result["temperature"]["min"] == 10
     assert result["temperature"]["max"] == 20
     assert result["rainfall"] == 100
+
+
+@patch("src.safe_request.requests.get")
+@patch("src.safe_request.socket.getaddrinfo")
+def test_get_api_data_allows_public_dns(mock_getaddrinfo, mock_requests_get):
+    mock_getaddrinfo.return_value = [
+        (2, 1, 6, "", ("8.8.8.8", 443)),
+    ]
+    mock_response = MagicMock()
+    mock_response.text = '{"ok": true}'
+    mock_requests_get.return_value = mock_response
+
+    result = weather.get_api_data("https://api.ecowitt.net/api/v3/device/real_time?x=1")
+
+    assert result == {"ok": True}
+    mock_requests_get.assert_called_once_with(
+        "https://api.ecowitt.net/api/v3/device/real_time?x=1",
+        timeout=10,
+        allow_redirects=False,
+    )
+
+
+def test_get_api_data_rejects_non_https():
+    result = weather.get_api_data("http://api.ecowitt.net/api/v3/device/real_time?x=1")
+    assert result == {}
+
+
+@patch("src.safe_request.socket.getaddrinfo")
+def test_get_api_data_rejects_private_ip_resolution(mock_getaddrinfo):
+    mock_getaddrinfo.return_value = [
+        (2, 1, 6, "", ("127.0.0.1", 443)),
+    ]
+
+    result = weather.get_api_data("https://api.ecowitt.net/api/v3/device/real_time?x=1")
+    assert result == {}
+
+
+def test_get_api_data_rejects_non_allowlisted_host():
+    result = weather.get_api_data("https://evil.example.org/path")
+    assert result == {}

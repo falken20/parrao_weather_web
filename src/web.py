@@ -1,6 +1,6 @@
 # by Richi Rod AKA @richionline / falken20
 
-from flask import Flask, jsonify, render_template, url_for
+from flask import Flask, render_template, url_for
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
 import sys
@@ -8,6 +8,7 @@ import sys
 from src.logger import Log, console
 from src.weather import get_api_data, get_summary_data
 from src.utils import convert_date, check_cache
+from src.api import api_bp
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY)
 
@@ -19,14 +20,14 @@ app = Flask(__name__, template_folder="../templates",
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
+# Register REST API blueprint
+app.register_blueprint(api_bp)
+
 # Cache info
 get_summary_data.cache_clear()
 console.print(f"CACHE: {get_summary_data.cache_info()}", style="yelloW")
 
 console.rule("Cercedilla Weather Web")
-
-# Cache for daily rain status
-_rain_cache = {"date": None, "rained_today": None}
 
 
 def transform_sun_time(data: dict, today: str) -> dict:
@@ -65,40 +66,6 @@ def transform_sun_time(data: dict, today: str) -> dict:
     results["sunset"] = datetime.strftime(sunset_date, "%H:%M:%S")
 
     return data
-
-
-def get_rain_today() -> tuple:
-    """Return whether it has rained today based on EcoWitt daily rainfall.
-    
-    Caches the result for the current day to avoid repeated API calls.
-    """
-    try:
-        today = datetime.today().strftime('%Y%m%d')
-        
-        # Check if we have a cached result for today
-        if _rain_cache["date"] == today and _rain_cache["rained_today"] is not None:
-            Log.info(f"Returning cached rain status for {today}")
-            return jsonify({"rained_today": _rain_cache["rained_today"]}), 200
-        
-        Log.info("Getting rain status for today...")
-        weather_data = get_api_data(URL_WEATHER_ECOWITT_CURRENT)
-        rainfall_daily = float(weather_data["data"]["rainfall"]["daily"]["value"])
-        rained_today = rainfall_daily > 0
-        
-        # Cache the result for today
-        _rain_cache["date"] = today
-        _rain_cache["rained_today"] = rained_today
-        
-        return jsonify({"rained_today": rained_today}), 200
-    except KeyError as e:
-        Log.error(f"KeyError in rain today endpoint: {e}", err=e, sys=sys)
-        return jsonify({"error": "Data processing error occurred"}), 500
-    except (TypeError, ValueError) as e:
-        Log.error(f"ValueError in rain today endpoint: {e}", err=e, sys=sys)
-        return jsonify({"error": "Data processing error occurred"}), 500
-    except Exception as e:
-        Log.error(f"Exception in rain today endpoint: {e}", err=e, sys=sys)
-        return jsonify({"error": "Website under maintenance"}), 500
 
 
 @app.route("/")
@@ -154,8 +121,3 @@ def home():
     except Exception as e:
         Log.error(f"Exception in home page: {e}", err=e, sys=sys)
         return render_template("error.html", message="Website under maintenance"), 500
-
-
-@app.route("/api/rain-today")
-def rain_today():
-    return get_rain_today()
