@@ -59,7 +59,10 @@ def enforce_request_policy():
         return None
 
     max_requests, window_seconds = _RATE_LIMITS.get(request.path, (120, 60))
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr or "unknown").split(",")[0].strip()
+    forwarded_for = request.headers.get(
+        "X-Forwarded-For", request.remote_addr or "unknown"
+    )
+    ip = forwarded_for.split(",")[0].strip()
     key = (ip, request.path)
     now = time()
 
@@ -73,6 +76,7 @@ def enforce_request_policy():
 
     return None
 
+
 # Register REST API blueprint
 app.register_blueprint(api_bp)
 
@@ -81,7 +85,8 @@ app.register_blueprint(api_bp)
 def set_security_headers(response):
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.googletagmanager.com; "
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com "
+        "https://cdn.jsdelivr.net https://www.googletagmanager.com; "
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
         "img-src 'self' data:; "
         "connect-src 'self' https://www.google-analytics.com; "
@@ -94,6 +99,7 @@ def set_security_headers(response):
     if _is_production:
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
+
 
 # Cache info
 get_summary_data.cache_clear()

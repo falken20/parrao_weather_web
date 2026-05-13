@@ -14,6 +14,7 @@ def _read_env(name: str, required: bool = False) -> str:
         raise RuntimeError(f"Required environment variable {name!r} is not set")
     return ""
 
+
 # Weather Underground API data
 STATION_ID = _read_env('STATION_ID', required=_IS_PRODUCTION)
 API_KEY_WUNDERGROUND = _read_env('API_KEY_WUNDERGROUND', required=_IS_PRODUCTION)
