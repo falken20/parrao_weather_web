@@ -165,3 +165,23 @@ def test_get_api_data_rejects_private_ip_resolution(mock_getaddrinfo):
 def test_get_api_data_rejects_non_allowlisted_host():
     result = weather.get_api_data("https://evil.example.org/path")
     assert result == {}
+
+
+def test_mask_url_secrets():
+    """Test that sensitive query params are masked in URLs"""
+    url = "https://api.ecowitt.net/api?application_key=SECRET1&api_key=SECRET2&mac=PUBLIC"
+    masked = weather._mask_url_secrets(url)
+    assert "SECRET1" not in masked
+    assert "SECRET2" not in masked
+    assert "application_key=***" in masked
+    assert "api_key=***" in masked
+    assert "mac=PUBLIC" in masked
+
+
+def test_mask_url_secrets_wunderground():
+    """Test masking for Weather Underground apiKey param"""
+    url = "https://api.weather.com/v2/pws?apiKey=MYSECRET&stationId=ICERCE9"
+    masked = weather._mask_url_secrets(url)
+    assert "MYSECRET" not in masked
+    assert "apiKey=***" in masked
+    assert "stationId=ICERCE9" in masked

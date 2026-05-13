@@ -1,8 +1,12 @@
 # by Richi Rod AKA @richionline / falken20
 
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, jsonify
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
+from collections import defaultdict, deque
+from threading import Lock
+from time import time
+import os
 import sys
 
 from src.logger import Log, console
@@ -10,18 +14,86 @@ from src.weather import get_api_data, get_summary_data
 from src.utils import convert_date, check_cache
 from src.api import api_bp
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
-                        URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY)
+                        URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY,
+                        GA_MEASUREMENT_ID)
 
 # Looking for .env file for environment vars
 load_dotenv(find_dotenv())
 
+# Block debug mode in production
+_is_production = os.environ.get('ENV_PRO', 'N').upper() == 'Y'
+if _is_production and os.environ.get('FLASK_DEBUG', '0') == '1':
+    raise RuntimeError("FLASK_DEBUG must not be enabled in production (ENV_PRO=Y)")
+
 app = Flask(__name__, template_folder="../templates",
             static_folder="../static")
-# Set this var to True to be able to make any web change and take the changes with refresh
-app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+# Require a secret key for signed cookies / sessions
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+if not app.secret_key:
+    if _is_production:
+        raise RuntimeError("FLASK_SECRET_KEY environment variable is required in production")
+    app.secret_key = os.urandom(32).hex()
+    Log.warning("FLASK_SECRET_KEY not set. Using ephemeral key for non-production only")
+
+# Only auto-reload templates outside production
+app.config['TEMPLATES_AUTO_RELOAD'] = not _is_production
+
+# Simple in-memory rate limiter (per-IP + path)
+_RATE_LIMITS = {
+    "/": (60, 60),
+    "/home": (60, 60),
+    "/api/rain-today": (30, 60),
+}
+_request_history = defaultdict(deque)
+_rate_limit_lock = Lock()
+
+
+@app.before_request
+def enforce_request_policy():
+    # Block state-changing methods by default (app is read-only)
+    if request.method not in {"GET", "HEAD", "OPTIONS"}:
+        return jsonify({"error": "Method not allowed"}), 405
+
+    if request.endpoint == "static":
+        return None
+
+    max_requests, window_seconds = _RATE_LIMITS.get(request.path, (120, 60))
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr or "unknown").split(",")[0].strip()
+    key = (ip, request.path)
+    now = time()
+
+    with _rate_limit_lock:
+        timestamps = _request_history[key]
+        while timestamps and timestamps[0] <= now - window_seconds:
+            timestamps.popleft()
+        if len(timestamps) >= max_requests:
+            return jsonify({"error": "Too many requests"}), 429
+        timestamps.append(now)
+
+    return None
 
 # Register REST API blueprint
 app.register_blueprint(api_bp)
+
+
+@app.after_request
+def set_security_headers(response):
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.googletagmanager.com; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "img-src 'self' data:; "
+        "connect-src 'self' https://www.google-analytics.com; "
+        "object-src 'none'; base-uri 'self'"
+    )
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'geolocation=(), camera=(), microphone=()'
+    if _is_production:
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
 
 # Cache info
 get_summary_data.cache_clear()
@@ -111,7 +183,8 @@ def home():
                                weather_current=weather_current["observations"][0],
                                weather_day=weather_day["observations"][0],
                                month_summary=month_summary,
-                               year_summary=year_summary)
+                               year_summary=year_summary,
+                               ga_measurement_id=GA_MEASUREMENT_ID)
     except KeyError as e:
         Log.error(f"KeyError in home page: {e}", err=e, sys=sys)
         return render_template("error.html", message="Data processing error occurred"), 500

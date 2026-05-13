@@ -9,6 +9,7 @@ class TestApi(unittest.TestCase):
 
     def setUp(self):
         self.app = web.app.test_client()
+        web._request_history.clear()
         # Reset cache before each test
         api._rain_cache["date"] = None
         api._rain_cache["rained_today"] = None
@@ -80,6 +81,23 @@ class TestApi(unittest.TestCase):
         self.assertEqual(500, response.status_code)
         payload = response.get_json()
         self.assertEqual("Data processing error occurred", payload["error"])
+
+    @patch("src.api.get_api_data")
+    @patch("src.api.API_ACCESS_KEY", "secret-token")
+    def test_rain_today_requires_api_key_when_enabled(self, mock_get_api_data):
+        mock_get_api_data.return_value = {
+            'data': {
+                'rainfall': {
+                    'daily': {'value': '0', 'unit': 'mm'}
+                }
+            }
+        }
+
+        unauthorized = self.app.get("/api/rain-today")
+        self.assertEqual(401, unauthorized.status_code)
+
+        authorized = self.app.get("/api/rain-today", headers={"X-API-Key": "secret-token"})
+        self.assertEqual(200, authorized.status_code)
 
 
 if __name__ == "__main__":

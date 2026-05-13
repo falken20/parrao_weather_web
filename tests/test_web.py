@@ -11,6 +11,7 @@ class TestWeb(unittest.TestCase):
 
     def setUp(self):
         self.app = web.app.test_client()
+        web._request_history.clear()
 
     @patch("src.web.get_summary_data")
     @patch("src.web.get_api_data")
@@ -139,6 +140,41 @@ class TestWeb(unittest.TestCase):
         # Both routes should return similar content
         root_response = self.app.get("/")
         self.assertEqual(root_response.status_code, response.status_code)
+
+    @patch("src.web.get_summary_data")
+    @patch("src.web.get_api_data")
+    def test_security_headers_present(self, mock_get_api_data, mock_get_summary_data):
+        def side_effect_get_api_data(url):
+            if 'sunrise-sunset' in url:
+                return {'results': {'sunrise': '7:00:00 AM', 'sunset': '6:00:00 PM'}}
+            elif 'ecowitt' in url:
+                return {
+                    'data': {
+                        'outdoor': {'temperature': {'value': '10'}, 'humidity': {'value': '50'}},
+                        'rainfall': {
+                            '1_hour': {'value': '0.0', 'unit': 'mm'},
+                            'daily': {'value': '0.0', 'unit': 'mm'},
+                            'monthly': {'value': '0.0', 'unit': 'mm'},
+                            'yearly': {'value': '0.0', 'unit': 'mm'}
+                        },
+                        'wind': {'wind_speed': {'value': '0.0'}},
+                        'pressure': {'relative': {'value': '1013.0'}},
+                        'solar_and_uvi': {'uvi': {'value': '0'}},
+                    }
+                }
+            return {'observations': [{'metric': {'temp': 10, 'tempLow': 5, 'tempHigh': 15}}]}
+
+        mock_get_api_data.side_effect = side_effect_get_api_data
+        mock_get_summary_data.return_value = (
+            {'temperature': {'min': 5, 'max': 15}, 'wind': '-', 'humidity': '-', 'pressure': '-', 'uvi': '-', 'rainfall': 0.0},
+            {'temperature': {'min': 0, 'max': 20}, 'wind': '-', 'humidity': '-', 'pressure': '-', 'uvi': '-', 'rainfall': 0.0}
+        )
+
+        response = self.app.get("/")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('nosniff', response.headers.get('X-Content-Type-Options'))
+        self.assertEqual('DENY', response.headers.get('X-Frame-Options'))
+        self.assertIsNotNone(response.headers.get('Content-Security-Policy'))
 
 if __name__ == "__main__":
     unittest.main()

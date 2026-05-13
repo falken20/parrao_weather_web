@@ -6,19 +6,19 @@ instance_class: F1
 # entrypoint: gunicorn -b:$PORT src.main:app 
 # No incluyas gunicorn en requirements.txt, a menos que especifiques el entrypoint
 
+# IMPORTANT: Do NOT hardcode secrets here. Use Google Cloud Secret Manager
+# or set them via: gcloud app deploy --set-env-vars KEY=VALUE
+# See: https://cloud.google.com/appengine/docs/standard/python3/config/appref#environment_variables
 env_variables:
   FALKEN_VERSION: "1.0.0"
   ENV_PRO: "Y"
   LEVEL_LOG: "INFO, WARNING, ERROR"
-
-  # Weather Underground API key
-  API_KEY_WUNDERGROUND: "6e0b488d6bd148be8b488d6bd1d8be99"
-  STATION_ID: "ICERCE9"
-
-  # Weather EcoWitt API key
-  API_KEY_ECOWITT: "cc9624af-7a05-432c-901d-e1ab0adae787"
-  APPLICATION_KEY: "07FFE4105A146CF4DF0C8BD0288F1AC2"
-  STATION_MAC: "BC:FF:4D:10:E4:C5"
+  # API keys must be set via Secret Manager or deployment pipeline
+  # API_KEY_WUNDERGROUND: set via Secret Manager
+  # STATION_ID: set via Secret Manager
+  # API_KEY_ECOWITT: set via Secret Manager
+  # APPLICATION_KEY: set via Secret Manager
+  # STATION_MAC: set via Secret Manager
   
 handlers:
 - url: /static

@@ -3,9 +3,10 @@
 # REST API endpoints. Add new routes here as the API grows.
 
 import sys
+import os
 from datetime import datetime
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
 from src.logger import Log
 from src.weather import get_api_data
@@ -16,6 +17,7 @@ api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 # Cache for daily rain status
 _rain_cache = {"date": None, "rained_today": None}
+API_ACCESS_KEY = os.environ.get("API_ACCESS_KEY", "")
 
 
 @api_bp.route("/rain-today")
@@ -25,6 +27,9 @@ def rain_today():
     Caches the result for the current day to avoid repeated API calls.
     """
     try:
+        if API_ACCESS_KEY and request.headers.get("X-API-Key") != API_ACCESS_KEY:
+            return jsonify({"error": "Unauthorized"}), 401
+
         today = datetime.today().strftime('%Y%m%d')
 
         # Check if we have a cached result for today
