@@ -8,6 +8,7 @@ import sys
 from src.logger import Log, console
 from src.weather import get_api_data, get_summary_data
 from src.utils import convert_date, check_cache
+from src.api import api_bp
 from src.config import (URL_SUNRISE_SUNSET, URL_WEATHER_ECOWITT_CURRENT,
                         URL_WEATHER_WUNDERGROUND_CURRENT, URL_WEATHER_WUNDERGROUND_DAY, URL_WEATHER_ECOWITT_HISTOY)
 
@@ -18,6 +19,9 @@ app = Flask(__name__, template_folder="../templates",
             static_folder="../static")
 # Set this var to True to be able to make any web change and take the changes with refresh
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+# Register REST API blueprint
+app.register_blueprint(api_bp)
 
 # Cache info
 get_summary_data.cache_clear()

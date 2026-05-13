@@ -1,13 +1,21 @@
 # by Richi Rod AKA @richionline / falken20
 
-import requests
 import sys
 import json
 from datetime import datetime, date
 from functools import lru_cache
 
 from src.logger import Log
+from src.safe_request import safe_get
 # from .utils import timed_lru_cache
+
+
+ALLOWED_API_HOSTS = {
+    "api.weather.com",
+    "api.ecowitt.net",
+    "api.sunrise-sunset.org",
+    "sunrise-sunset.org",
+}
 
 
 def get_api_data(url: str, cycle_type: str = "1day", date1=None, date2=None):
@@ -23,7 +31,7 @@ def get_api_data(url: str, cycle_type: str = "1day", date1=None, date2=None):
 
     try:
         # Getting a dataframe with the all data weather
-        response = requests.get(url)
+        response = safe_get(url, ALLOWED_API_HOSTS)
         dict_weather = json.loads(response.text)
 
         Log.debug(f'API data JSON: \n {dict_weather}')
