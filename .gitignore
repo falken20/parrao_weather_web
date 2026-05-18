@@ -116,6 +116,8 @@ celerybeat.pid
 
 # Environments
 .env
+credentials.yaml
+app.deploy.yaml
 .venv
 env/
 venv/

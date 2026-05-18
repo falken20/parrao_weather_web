@@ -9,6 +9,9 @@ instance_class: F1
 # IMPORTANT: Do NOT hardcode secrets here. Use Google Cloud Secret Manager
 # or set them via: gcloud app deploy --set-env-vars KEY=VALUE
 # See: https://cloud.google.com/appengine/docs/standard/python3/config/appref#environment_variables
+# NOTE: App Engine app.yaml does not support an `includes:` directive.
+# If you want file-based credentials, use scripts/build_app_yaml.sh
+# to generate app.deploy.yaml from this base file + credentials.yaml.
 env_variables:
   FALKEN_VERSION: "1.0.0"
   ENV_PRO: "Y"
@@ -19,7 +22,7 @@ env_variables:
   # API_KEY_ECOWITT: set via Secret Manager
   # APPLICATION_KEY: set via Secret Manager
   # STATION_MAC: set via Secret Manager
-  
+
 handlers:
 - url: /static
   static_dir: static
