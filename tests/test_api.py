@@ -99,6 +99,26 @@ class TestApi(unittest.TestCase):
         authorized = self.app.get("/api/rain-today", headers={"X-API-Key": "secret-token"})
         self.assertEqual(200, authorized.status_code)
 
+    @patch("src.api.get_api_data")
+    def test_rain_today_value_error(self, mock_get_api_data):
+        """Test rain endpoint handles ValueError branch."""
+        mock_get_api_data.side_effect = ValueError("invalid payload")
+
+        response = self.app.get("/api/rain-today")
+        self.assertEqual(500, response.status_code)
+        payload = response.get_json()
+        self.assertEqual("Data processing error occurred", payload["error"])
+
+    @patch("src.api.get_api_data")
+    def test_rain_today_generic_exception(self, mock_get_api_data):
+        """Test rain endpoint handles unexpected exception branch."""
+        mock_get_api_data.side_effect = RuntimeError("unexpected failure")
+
+        response = self.app.get("/api/rain-today")
+        self.assertEqual(500, response.status_code)
+        payload = response.get_json()
+        self.assertEqual("Website under maintenance", payload["error"])
+
 
 if __name__ == "__main__":
     unittest.main()
