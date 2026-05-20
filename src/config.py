@@ -2,9 +2,22 @@
 from datetime import datetime
 import os
 
+
+_IS_PRODUCTION = os.environ.get('ENV_PRO', 'N').upper() == 'Y'
+
+
+def _read_env(name: str, required: bool = False) -> str:
+    value = os.environ.get(name)
+    if value:
+        return value
+    if required:
+        raise RuntimeError(f"Required environment variable {name!r} is not set")
+    return ""
+
+
 # Weather Underground API data
-STATION_ID = os.environ.get('STATION_ID')
-API_KEY_WUNDERGROUND = os.environ.get('API_KEY_WUNDERGROUND')
+STATION_ID = _read_env('STATION_ID', required=_IS_PRODUCTION)
+API_KEY_WUNDERGROUND = _read_env('API_KEY_WUNDERGROUND', required=_IS_PRODUCTION)
 URL_WEATHER_WUNDERGROUND_CURRENT = f"https://api.weather.com/v2/pws/observations/current?stationId={STATION_ID}" \
     f"&format=json&units=m&numericPrecision=decimal" \
     f"&apiKey={API_KEY_WUNDERGROUND}"
@@ -14,9 +27,9 @@ URL_WEATHER_WUNDERGROUND_DAY = f"https://api.weather.com/v2/pws/history/daily?st
     f"&date={datetime.today().strftime('%Y%m%d')}"
 
 # Weather EcoWitt API data
-API_KEY_ECOWITT = os.environ.get('API_KEY_ECOWITT')
-APPLICATION_KEY_ECOWITT = os.environ.get('APPLICATION_KEY')
-STATION_MAC = os.environ.get('STATION_MAC')
+API_KEY_ECOWITT = _read_env('API_KEY_ECOWITT', required=_IS_PRODUCTION)
+APPLICATION_KEY_ECOWITT = _read_env('APPLICATION_KEY', required=_IS_PRODUCTION)
+STATION_MAC = _read_env('STATION_MAC', required=_IS_PRODUCTION)
 URL_WEATHER_ECOWITT_CURRENT = f"https://api.ecowitt.net/api/v3/device/real_time?application_key={APPLICATION_KEY_ECOWITT}" \
     f"&api_key={API_KEY_ECOWITT}&mac={STATION_MAC}" \
     f"&temp_unitid=1&pressure_unitid=3&wind_speed_unitid=7&rainfall_unitid=12" \
@@ -30,3 +43,6 @@ URL_WEATHER_ECOWITT_HISTOY = f"https://api.ecowitt.net/api/v3/device/history?app
 
 # API by https://sunrise-sunset.org/api
 URL_SUNRISE_SUNSET = "https://api.sunrise-sunset.org/json?lat=40.727&lng=-4.074&date=today"
+
+# Optional GA tracking ID for template rendering
+GA_MEASUREMENT_ID = _read_env('GA_MEASUREMENT_ID', required=False)

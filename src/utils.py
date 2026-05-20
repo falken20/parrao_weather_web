@@ -2,7 +2,7 @@
 
 from dateutil import tz
 from functools import lru_cache, wraps
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from src.logger import Log
 from .weather import get_summary_data
@@ -45,13 +45,13 @@ def timed_lru_cache(seconds: int, maxsize: int = 128):
     def wrapper_cache(func):
         func = lru_cache(maxsize=maxsize)(func)
         func.lifetime = timedelta(seconds=seconds)
-        func.expiration = datetime.utcnow() + func.lifetime
+        func.expiration = datetime.now(timezone.utc) + func.lifetime
 
         @wraps(func)
         def wrapped_func(*args, **kwargs):
-            if datetime.utcnow() >= func.expiration:
+            if datetime.now(timezone.utc) >= func.expiration:
                 func.cache_clear()
-                func.expiration = datetime.utcnow() + func.lifetime
+                func.expiration = datetime.now(timezone.utc) + func.lifetime
 
             return func(*args, **kwargs)
 

@@ -2,12 +2,24 @@
 
 import sys
 import json
+import re
 from datetime import datetime, date
 from functools import lru_cache
 
 from src.logger import Log
 from src.safe_request import safe_get
 # from .utils import timed_lru_cache
+
+
+_SENSITIVE_PARAMS = re.compile(
+    r'(api_key|apikey|application_key|apiKey)=([^&]+)',
+    re.IGNORECASE,
+)
+
+
+def _mask_url_secrets(url: str) -> str:
+    """Replace sensitive query-param values with '***' before logging."""
+    return _SENSITIVE_PARAMS.sub(r'\1=***', url)
 
 
 ALLOWED_API_HOSTS = {
@@ -27,14 +39,14 @@ def get_api_data(url: str, cycle_type: str = "1day", date1=None, date2=None):
     date_to = date2 if date2 else None
     if date_from and date_to:  # Calling to API EcoWitt history
         url += f"&cycle_type={cycle_type}&start_date={date_from} 00:00:00&end_date={date_to} 23:59:59"
-    Log.debug(f"URL: {url}")
+    Log.debug(f"URL: {_mask_url_secrets(url)}")
 
     try:
         # Getting a dataframe with the all data weather
         response = safe_get(url, ALLOWED_API_HOSTS)
         dict_weather = json.loads(response.text)
 
-        Log.debug(f'API data JSON: \n {dict_weather}')
+        Log.debug(f'API data JSON keys: {list(dict_weather.keys())}')
 
         return dict_weather
 

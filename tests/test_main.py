@@ -1,7 +1,6 @@
 import unittest
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import patch, MagicMock
 import sys
-import os
 
 class TestMain(unittest.TestCase):
 
@@ -15,51 +14,40 @@ class TestMain(unittest.TestCase):
         self.assertTrue(hasattr(main, 'app'))
 
     @patch('src.web.app')
-    @patch('builtins.__import__')
-    def test_main_execution_calls_app_run(self, mock_import, mock_app):
+    def test_main_execution_calls_app_run(self, mock_app):
         """Test that app.run() is called when script is executed directly"""
         mock_app.run = MagicMock()
-        
-        # Mock the import to return our mocked app
-        def side_effect(name, *args, **kwargs):
-            if name == 'src.web':
-                mock_module = MagicMock()
-                mock_module.app = mock_app
-                return mock_module
-            return __import__(name, *args, **kwargs)
-        
-        mock_import.side_effect = side_effect
-        
+
         # Read the main.py file content
         with open('main.py', 'r') as f:
             main_content = f.read()
-        
+
         # Create a namespace that simulates __main__ execution
         namespace = {'__name__': '__main__'}
-        
+
         # Execute the code in the namespace
         exec(main_content, namespace)
-        
+
         # Verify app.run() was called
         mock_app.run.assert_called_once()
 
     @patch('src.web.app')
     def test_main_execution_calls_app_run_without_debug(self, mock_app):
-        """Test that app.run() is called without debug parameter"""
+        """Test that app.run() is called with the configured port"""
         mock_app.run = MagicMock()
-        
+
         # Read the main.py content
         with open('main.py', 'r') as f:
             main_content = f.read()
-        
+
         # Create a namespace that simulates __main__ execution
         namespace = {'__name__': '__main__'}
-        
+
         # Execute the code in the namespace
         exec(main_content, namespace)
-        
+
         # Verify app.run() was called
-        mock_app.run.assert_called_once_with()
+        mock_app.run.assert_called_once_with(port=5000)
 
     @patch('src.web.app')
     def test_module_import_does_not_call_app_run(self, mock_app):
@@ -139,8 +127,8 @@ class TestMain(unittest.TestCase):
         # Check that the main block exists
         self.assertIn('if __name__ == "__main__":', content)
         
-        # Check that app.run() is called
-        self.assertIn('app.run()', content)
+        # Check that app.run is called in the main block
+        self.assertIn('app.run(', content)
 
 
 if __name__ == '__main__':

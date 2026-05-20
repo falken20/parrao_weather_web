@@ -2,8 +2,7 @@ import unittest
 from unittest.mock import patch
 from io import StringIO
 import sys
-import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from src import utils
 from src import logger
@@ -58,18 +57,18 @@ class TestUtils(unittest.TestCase):
         # Verify that check_cache executed and returned None (expected behavior)
         self.assertIsNone(ret)
 
-    @patch("src.weather.get_summary_data")
+    @patch("src.utils.get_summary_data")
     def test_check_cache_expiration(self, mock_get_summary_data):
         """Test cache expiration logic"""
         # Mock the cache info and simulate expiration
         mock_get_summary_data.cache_info.return_value = "Cache Info Mocked"
+        mock_get_summary_data.cache_clear.return_value = None
         utils.previous_cache = datetime.now() - timedelta(minutes=62)
         captured_output = redirect_stdout()
         utils.check_cache(minutes=1)
         redirect_reset()
-        output = captured_output.getvalue()
-        # Check for cache expiration message (handles ANSI color codes from rich)
-        self.assertTrue("Cleaning cache" in output or "expiration" in output or len(output) > 0)
+        # Ensure expiration branch cleared the cache
+        self.assertTrue(mock_get_summary_data.cache_clear.called)
 
     def test_timed_lru_cache_basic_functionality(self):
         """Test that timed_lru_cache decorator works for basic caching"""
@@ -114,8 +113,14 @@ class TestUtils(unittest.TestCase):
         call_count = 0
         
         # Mock initial time
-        initial_time = datetime(2023, 1, 1, 12, 0, 0)
-        mock_datetime.utcnow.return_value = initial_time
+        initial_time = datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        mock_datetime.now.side_effect = [
+            initial_time,  # decorator init
+            initial_time,  # first call check
+            initial_time + timedelta(seconds=20),  # second call check
+            initial_time + timedelta(seconds=35),  # third call check
+            initial_time + timedelta(seconds=35),  # expiration reset
+        ]
         
         @utils.timed_lru_cache(seconds=30)
         def test_function(x):
@@ -129,13 +134,11 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(call_count, 1)
         
         # Second call within time limit - should use cache
-        mock_datetime.utcnow.return_value = initial_time + timedelta(seconds=20)
         result2 = test_function(5)
         self.assertEqual(result2, 10)
         self.assertEqual(call_count, 1)
         
         # Third call after expiration - should execute function again
-        mock_datetime.utcnow.return_value = initial_time + timedelta(seconds=35)
         result3 = test_function(5)
         self.assertEqual(result3, 10)
         self.assertEqual(call_count, 2)
@@ -145,8 +148,15 @@ class TestUtils(unittest.TestCase):
         """Test multiple cache expirations work correctly"""
         call_count = 0
         
-        initial_time = datetime(2023, 1, 1, 12, 0, 0)
-        mock_datetime.utcnow.return_value = initial_time
+        initial_time = datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        mock_datetime.now.side_effect = [
+            initial_time,  # decorator init
+            initial_time,  # first call check
+            initial_time + timedelta(seconds=15),  # second call check
+            initial_time + timedelta(seconds=15),  # second reset
+            initial_time + timedelta(seconds=30),  # third call check
+            initial_time + timedelta(seconds=30),  # third reset
+        ]
         
         @utils.timed_lru_cache(seconds=10)
         def test_function(x):
@@ -159,12 +169,10 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(call_count, 1)
         
         # Expire cache and call again
-        mock_datetime.utcnow.return_value = initial_time + timedelta(seconds=15)
         test_function(5)
         self.assertEqual(call_count, 2)
         
         # Expire cache again and call
-        mock_datetime.utcnow.return_value = initial_time + timedelta(seconds=30)
         test_function(5)
         self.assertEqual(call_count, 3)
 
@@ -223,7 +231,7 @@ class TestUtils(unittest.TestCase):
     @patch('src.utils.datetime')
     def test_timed_lru_cache_preserves_function_metadata(self, mock_datetime):
         """Test that the decorator preserves original function metadata"""
-        mock_datetime.utcnow.return_value = datetime(2023, 1, 1, 12, 0, 0)
+        mock_datetime.now.return_value = datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
         
         @utils.timed_lru_cache(seconds=60)
         def test_function(x):
