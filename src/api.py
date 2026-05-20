@@ -4,6 +4,7 @@
 
 import sys
 import os
+import hmac
 from datetime import datetime
 
 from flask import Blueprint, jsonify, request
@@ -17,7 +18,30 @@ api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 # Cache for daily rain status
 _rain_cache = {"date": None, "rained_today": None}
+
+_IS_PRODUCTION = os.environ.get("ENV_PRO", "N").upper() == "Y"
 API_ACCESS_KEY = os.environ.get("API_ACCESS_KEY", "")
+
+# Fail closed: in production the API key MUST be configured. Otherwise we would
+# silently expose the endpoint without authentication ("fail-open").
+if _IS_PRODUCTION and not API_ACCESS_KEY:
+    raise RuntimeError(
+        "API_ACCESS_KEY environment variable is required in production"
+    )
+
+
+def _is_authorized() -> bool:
+    """Validate the X-API-Key header against the configured access key.
+
+    Uses a constant-time comparison to avoid timing side-channels. Outside of
+    production the check is skipped only when no key is configured, which
+    allows local development without credentials.
+    """
+    if not API_ACCESS_KEY:
+        # Only reachable in non-production (see import-time guard above).
+        return True
+    provided = request.headers.get("X-API-Key", "")
+    return hmac.compare_digest(provided, API_ACCESS_KEY)
 
 
 @api_bp.route("/rain-today")
@@ -27,7 +51,7 @@ def rain_today():
     Caches the result for the current day to avoid repeated API calls.
     """
     try:
-        if API_ACCESS_KEY and request.headers.get("X-API-Key") != API_ACCESS_KEY:
+        if not _is_authorized():
             return jsonify({"error": "Unauthorized"}), 401
 
         today = datetime.today().strftime('%Y%m%d')

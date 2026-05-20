@@ -3,7 +3,7 @@
 from flask import Flask, render_template, url_for, request, jsonify
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
-from collections import defaultdict, deque
+from collections import OrderedDict, deque
 from threading import Lock
 from time import time
 import os
@@ -45,8 +45,38 @@ _RATE_LIMITS = {
     "/home": (60, 60),
     "/api/rain-today": (30, 60),
 }
-_request_history = defaultdict(deque)
+# Hard cap on tracked (ip, path) keys to prevent unbounded memory growth from
+# spoofed clients or large numbers of distinct IPs. Oldest entries are evicted.
+_RATE_LIMIT_MAX_KEYS = int(os.environ.get("RATE_LIMIT_MAX_KEYS", "10000"))
+# Only honor X-Forwarded-For when running behind a trusted proxy. Otherwise the
+# header is attacker-controlled and can be used to inflate the key space or
+# bypass per-IP rate limits.
+_TRUST_PROXY = os.environ.get("TRUST_PROXY", "N").upper() == "Y"
+# Optional allowlist of proxy IPs that are allowed to set X-Forwarded-For.
+# When set, the header is only honored if request.remote_addr matches one of
+# these IPs. This prevents spoofing when the app is also reachable directly.
+_TRUSTED_PROXIES = {
+    ip.strip()
+    for ip in os.environ.get("TRUSTED_PROXIES", "").split(",")
+    if ip.strip()
+}
+_request_history = OrderedDict()
 _rate_limit_lock = Lock()
+
+
+def _client_ip():
+    if _TRUST_PROXY:
+        # If an allowlist is configured, only trust the header when the direct
+        # peer is one of the declared proxies. Otherwise fall back to the
+        # direct peer address.
+        if not _TRUSTED_PROXIES or request.remote_addr in _TRUSTED_PROXIES:
+            forwarded_for = request.headers.get("X-Forwarded-For")
+            if forwarded_for:
+                # Take the left-most entry (the original client). Only safe
+                # because we have validated the request came from a trusted
+                # proxy; otherwise this value is attacker-controlled.
+                return forwarded_for.split(",")[0].strip()
+    return request.remote_addr or "unknown"
 
 
 @app.before_request
@@ -59,20 +89,33 @@ def enforce_request_policy():
         return None
 
     max_requests, window_seconds = _RATE_LIMITS.get(request.path, (120, 60))
-    forwarded_for = request.headers.get(
-        "X-Forwarded-For", request.remote_addr or "unknown"
-    )
-    ip = forwarded_for.split(",")[0].strip()
-    key = (ip, request.path)
+    key = (_client_ip(), request.path)
     now = time()
 
     with _rate_limit_lock:
-        timestamps = _request_history[key]
+        timestamps = _request_history.get(key)
+        if timestamps is None:
+            timestamps = deque()
+            _request_history[key] = timestamps
+        else:
+            # Mark this key as most-recently-used for LRU eviction.
+            _request_history.move_to_end(key)
+
         while timestamps and timestamps[0] <= now - window_seconds:
             timestamps.popleft()
+
         if len(timestamps) >= max_requests:
+            if not timestamps:
+                _request_history.pop(key, None)
             return jsonify({"error": "Too many requests"}), 429
+
         timestamps.append(now)
+
+        # Defensive cleanup: drop empty deques and enforce a hard cap on the
+        # number of tracked keys (LRU eviction) so spoofed IPs cannot exhaust
+        # memory.
+        while len(_request_history) > _RATE_LIMIT_MAX_KEYS:
+            _request_history.popitem(last=False)
 
     return None
 
