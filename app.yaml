@@ -16,12 +16,14 @@ env_variables:
   FALKEN_VERSION: "1.0.0"
   ENV_PRO: "Y"
   LEVEL_LOG: "INFO, WARNING, ERROR"
-  # API keys must be set via Secret Manager or deployment pipeline
-  # API_KEY_WUNDERGROUND: set via Secret Manager
-  # STATION_ID: set via Secret Manager
-  # API_KEY_ECOWITT: set via Secret Manager
-  # APPLICATION_KEY: set via Secret Manager
-  # STATION_MAC: set via Secret Manager
+  # Project that owns the secrets in Google Cloud Secret Manager.
+  # Required when ENV_PRO=Y so src/config.py can resolve missing values
+  # from Secret Manager instead of plain env vars.
+  GCP_PROJECT_ID: "REPLACE_WITH_YOUR_GCP_PROJECT_ID"
+  # API keys are NOT defined here. They live in Secret Manager and are read
+  # at runtime by src/config.py. See docs/SECRET_MANAGER.md.
+  # Secrets expected: API_KEY_WUNDERGROUND, STATION_ID, API_KEY_ECOWITT,
+  # APPLICATION_KEY, STATION_MAC, FLASK_SECRET_KEY, API_ACCESS_KEY.
 
 handlers:
 - url: /static

@@ -5,14 +5,63 @@ import os
 
 _IS_PRODUCTION = os.environ.get('ENV_PRO', 'N').upper() == 'Y'
 
+# When ENV_PRO=Y and an env var is missing, we transparently fetch the value
+# from Google Cloud Secret Manager. Required env vars to enable this:
+#   - GCP_PROJECT_ID: target GCP project that owns the secrets.
+# The service account running App Engine must have the role
+# `roles/secretmanager.secretAccessor` on each secret (or project-wide).
+_SECRET_MANAGER_ENABLED = _IS_PRODUCTION and bool(os.environ.get('GCP_PROJECT_ID'))
+_SECRET_CACHE: dict = {}
+_SECRET_CLIENT = None
+
+
+def _get_secret_client():
+    """Lazily build a Secret Manager client. Imported on demand so the
+    dependency is only required in production deployments."""
+    global _SECRET_CLIENT
+    if _SECRET_CLIENT is None:
+        from google.cloud import secretmanager  # type: ignore
+        _SECRET_CLIENT = secretmanager.SecretManagerServiceClient()
+    return _SECRET_CLIENT
+
+
+def _fetch_from_secret_manager(name: str) -> str:
+    """Fetch the latest version of a secret named `name` from Secret Manager.
+
+    Returns an empty string if the secret cannot be retrieved; callers decide
+    whether the value is mandatory.
+    """
+    project_id = os.environ.get('GCP_PROJECT_ID', '')
+    if not project_id:
+        return ""
+    try:
+        client = _get_secret_client()
+        secret_path = f"projects/{project_id}/secrets/{name}/versions/latest"
+        response = client.access_secret_version(request={"name": secret_path})
+        return response.payload.data.decode("UTF-8").strip()
+    except Exception:
+        # Do not leak secret payloads or stack traces here. The caller will
+        # raise a generic RuntimeError if the secret is required.
+        return ""
+
 
 def _read_env(name: str, required: bool = False) -> str:
-    value = os.environ.get(name)
-    if value:
-        return value
-    if required:
-        raise RuntimeError(f"Required environment variable {name!r} is not set")
-    return ""
+    """Read a configuration value with the following precedence:
+      1. Process environment variable (always wins, useful for local/dev).
+      2. Google Cloud Secret Manager (only in production with GCP_PROJECT_ID).
+    Values are cached in-memory to avoid repeated API calls."""
+    if name in _SECRET_CACHE:
+        return _SECRET_CACHE[name]
+
+    value = os.environ.get(name, "")
+    if not value and _SECRET_MANAGER_ENABLED:
+        value = _fetch_from_secret_manager(name)
+
+    if not value and required:
+        raise RuntimeError(f"Required configuration value {name!r} is not set")
+
+    _SECRET_CACHE[name] = value
+    return value
 
 
 # Weather Underground API data
